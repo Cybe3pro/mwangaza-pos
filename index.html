@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimplePOS - Mwangaza Mini Mart</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body id="appBody" class="min-h-screen bg-slate-950 text-white font-sans antialiased overflow-x-hidden select-none transition-colors duration-300">
+
+<main class="min-h-screen flex flex-col lg:flex-row relative">
+
+    <!-- =================================================
+         LEFT BRANDING PANEL (Vibrant Green & Visual Assets)
+    ================================================== -->
+    <aside id="brandPanel" class="w-full lg:w-[45%] xl:w-[48%] relative bg-gradient-to-br from-[#00b0ff]/20 via-[#00c853] to-[#004d40] p-8 lg:p-12 flex flex-col justify-between overflow-hidden min-h-[500px] lg:min-h-screen transition-all duration-300">
+        
+        <!-- Dot Pattern Background Overlays -->
+        <div class="absolute top-10 right-12 w-28 h-28 bg-[radial-gradient(rgba(255,255,255,0.25)_2px,transparent_2px)] [background-size:12px_12px] opacity-40 pointer-events-none"></div>
+        <div class="absolute bottom-8 left-6 w-24 h-24 bg-[radial-gradient(rgba(255,255,255,0.25)_2px,transparent_2px)] [background-size:12px_12px] opacity-40 pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-28 h-28 bg-[radial-gradient(rgba(255,255,255,0.25)_2px,transparent_2px)] [background-size:12px_12px] opacity-40 pointer-events-none"></div>
+
+        <!-- Ambient Sparkles Lighting -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.3)_0%,transparent_50%)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(0,230,118,0.4)_0%,transparent_60%)] pointer-events-none"></div>
+
+        <!-- Floating Decorative Retail Items -->
+        <div class="absolute top-14 left-6 text-5xl filter drop-shadow-xl animate-bounce [animation-duration:6s]">🍌🍎</div>
+        <div class="absolute top-8 right-24 w-28 h-24 bg-white/20 rounded-2xl backdrop-blur-md rotate-12 border border-white/30 shadow-2xl flex items-center justify-center">
+            <i data-lucide="shopping-bag" class="w-12 h-12 text-white/80"></i>
+        </div>
+        <div class="absolute top-1/3 left-4 text-5xl filter drop-shadow-xl">🍎</div>
+        <div class="absolute top-1/2 left-8 text-5xl filter drop-shadow-xl">🎧</div>
+        <div class="absolute top-1/3 right-6 text-5xl filter drop-shadow-xl rotate-12">👕</div>
+        <div class="absolute bottom-36 right-10 text-5xl filter drop-shadow-xl -rotate-12">👕</div>
+        <div class="absolute bottom-6 left-6 text-6xl filter drop-shadow-xl">🍌🍉</div>
+        <div class="absolute bottom-4 left-1/3 w-40 h-24 bg-slate-900/80 rounded-2xl border border-white/20 -rotate-12 backdrop-blur-md shadow-2xl"></div>
+
+        <!-- Top Header with Curved "S" Ribbon Logo -->
+        <div class="relative z-10 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00e676] to-[#00a843] p-1.5 shadow-lg shadow-emerald-950/40 border border-white/20 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                    <path d="M 68 32 C 68 32, 42 22, 34 34 C 26 46, 72 48, 64 66 C 56 82, 28 68, 28 68" 
+                          fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <span class="text-2xl font-extrabold tracking-tight text-white drop-shadow">SimplePOS</span>
+        </div>
+
+        <!-- Center Store Branding with Dual-Arch "M" Logo -->
+        <div class="relative z-10 my-auto text-center flex flex-col items-center py-12">
+            
+            <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-2xl mb-5 border-4 border-white/40 p-2">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                    <path d="M 24 70 L 38 32 C 40 27, 46 27, 48 32 L 60 58 C 61 61, 65 61, 66 58 L 76 35" 
+                          fill="none" stroke="#00c853" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 50 60 C 51 57, 54 56, 56 60 L 65 32 C 67 27, 73 27, 75 32 L 77 70" 
+                          fill="none" stroke="#00b0ff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-white drop-shadow-md">
+                Mwangaza
+            </h1>
+            <p class="text-2xl font-semibold text-emerald-100 mt-1">
+                Mini Mart
+            </p>
+
+            <!-- Feature Pills -->
+            <div class="flex items-center justify-center gap-4 mt-8">
+                <div class="w-24 h-24 rounded-2xl bg-white/15 border border-white/25 backdrop-blur-md flex flex-col items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-1">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-white">Fast</span>
+                    <span class="text-xs font-semibold text-white">Checkout</span>
+                </div>
+
+                <div class="w-24 h-24 rounded-2xl bg-white/15 border border-white/25 backdrop-blur-md flex flex-col items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-1">
+                        <i data-lucide="package-check" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-white">Simple</span>
+                    <span class="text-xs font-semibold text-white">Inventory</span>
+                </div>
+            </div>
+
+            <p class="mt-8 text-3xl font-handwriting text-white tracking-wide drop-shadow">
+                Build for small shops
+            </p>
+        </div>
+
+        <div></div>
+    </aside>
+
+    <!-- =================================================
+         RIGHT LOGIN PANEL (Supermarket Background Blur)
+    ================================================== -->
+    <section class="flex-1 relative bg-cover bg-center p-6 lg:p-12 flex flex-col justify-between"
+             style="background-image: url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=1920&auto=format&fit=crop');">
+        
+        <div id="overlay" class="absolute inset-0 bg-slate-950/65 backdrop-blur-xs transition-colors duration-300"></div>
+
+        <!-- Top Right Controls (Live Clock & Theme Toggle) -->
+        <div class="relative z-10 flex items-center justify-between w-full">
+            <div></div> 
+            
+            <div class="flex items-center gap-6">
+                <div id="currentTime" class="text-4xl lg:text-5xl font-extrabold tracking-wider text-white drop-shadow-lg font-sans">
+                    --:--:--
+                </div>
+
+                <!-- Interactive Theme Switcher -->
+                <div class="flex items-center gap-2 bg-black/40 border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg select-none">
+                    <span id="themeIcon" class="text-yellow-400 text-sm">☀️</span>
+                    <span id="themeLabel" class="text-xs font-medium text-white">Vibrant</span>
+                    
+                    <button id="themeToggle" type="button" data-theme="vibrant" 
+                            class="w-10 h-5 bg-emerald-500 rounded-full p-0.5 flex items-center justify-end transition-all duration-300 cursor-pointer focus:outline-none">
+                        <div id="themeToggleHandle" class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Central Glassmorphic Card -->
+        <div class="relative z-10 w-full max-w-md mx-auto my-auto bg-white/10 border border-white/20 backdrop-blur-xl rounded-3xl p-8 lg:p-10 shadow-2xl">
+            
+            <div class="mb-6">
+                <h2 id="greetingText" class="text-2xl font-bold text-white flex items-center gap-2">
+                    ☀️ Good Afternoon,
+                </h2>
+                <h3 class="text-3xl font-extrabold text-white mt-1">
+                    Welcome Back 👏!
+                </h3>
+            </div>
+
+            <form id="loginForm" class="space-y-4" onsubmit="return false;">
+
+                <!-- Username Input -->
+                <div>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400"></i>
+                        <input id="usernameInput" type="text" placeholder="Username" value="Username"
+                               class="w-full pl-12 pr-4 py-3.5 bg-slate-900/60 border-2 border-emerald-500 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm font-medium">
+                    </div>
+                    <p class="text-[11px] text-red-300 mt-1.5 flex items-center gap-1">
+                        <span class="w-3.5 h-3.5 rounded-full bg-red-400/30 text-red-300 flex items-center justify-center text-[9px] font-bold">!</span>
+                        Error message detailed
+                    </p>
+                </div>
+
+                <!-- Password Input -->
+                <div>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400"></i>
+                        <input id="passwordInput" type="password" placeholder="Password" value="Password"
+                               class="w-full pl-12 pr-12 py-3.5 bg-slate-900/60 border border-emerald-500/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 text-sm font-medium">
+                        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition">
+                            <i id="passwordIcon" data-lucide="eye-off" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-red-300 mt-1.5 flex items-center gap-1">
+                        <span class="w-3.5 h-3.5 rounded-full bg-red-400/30 text-red-300 flex items-center justify-center text-[9px] font-bold">!</span>
+                        Error message saved
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked class="w-4 h-4 rounded bg-slate-900 border-white/20 text-emerald-500 focus:ring-0">
+                        <span>Login inact</span>
+                    </label>
+                    <a href="#" class="hover:underline text-slate-300">Forgot password?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="relative pt-2">
+                    <button type="submit"
+                            class="w-full py-4 rounded-xl font-bold text-slate-950 bg-[#00e676] hover:bg-[#00c853] shadow-lg shadow-[#00e676]/30 transition duration-200 flex items-center justify-center gap-2 text-base">
+                        Open Store <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+
+                    <div class="absolute bottom-1 right-12 pointer-events-none transform translate-y-2">
+                        <svg class="w-6 h-6 text-white drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 2l12 11.2-5.8.5 3.3 7.3-2.2 1-3.2-7.4L7 19V2z"/>
+                        </svg>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="relative z-10 mx-auto bg-black/40 border border-white/10 backdrop-blur-md px-6 py-2 rounded-full text-xs text-slate-300 shadow-lg">
+            © 2026 SimplePOS • Version 1.0
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+        initializeClock();
+        initializeGreeting();
+        initializeThemeToggle();
+        initializePasswordToggle();
+    });
+
+    // 1. Live Clock
+    function initializeClock() {
+        const timeElement = document.getElementById("currentTime");
+        if (!timeElement) return;
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    // 2. Dynamic Time-based Greeting
+    function initializeGreeting() {
+        const greetingElement = document.getElementById("greetingText");
+        if (!greetingElement) return;
+
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) {
+                greetingElement.textContent = "🌅 Good Morning,";
+            } else if (hour < 18) {
+                greetingElement.textContent = "☀️ Good Afternoon,";
+            } else {
+                greetingElement.textContent = "🌙 Good Evening,";
+            }
+        }
+
+        updateGreeting();
+        setInterval(updateGreeting, 60000);
+    }
+
+    // 3. Theme Toggle Switch
+    function initializeThemeToggle() {
+        const toggleBtn = document.getElementById("themeToggle");
+        const themeLabel = document.getElementById("themeLabel");
+        const themeIcon = document.getElementById("themeIcon");
+        const brandPanel = document.getElementById("brandPanel");
+        const overlay = document.getElementById("overlay");
+
+        if (!toggleBtn) return;
+
+        toggleBtn.addEventListener("click", () => {
+            const isVibrant = toggleBtn.dataset.theme === "vibrant";
+
+            if (isVibrant) {
+                toggleBtn.dataset.theme = "dark";
+                toggleBtn.classList.remove("bg-emerald-500", "justify-end");
+                toggleBtn.classList.add("bg-slate-700", "justify-start");
+                themeLabel.textContent = "Dark";
+                themeIcon.textContent = "🌙";
+                
+                brandPanel.classList.remove("from-[#00b0ff]/20", "via-[#00c853]", "to-[#004d40]");
+                brandPanel.classList.add("from-slate-900", "via-slate-800", "to-slate-950");
+                overlay.classList.remove("bg-slate-950/65");
+                overlay.classList.add("bg-slate-950/85");
+            } else {
+                toggleBtn.dataset.theme = "vibrant";
+                toggleBtn.classList.remove("bg-slate-700", "justify-start");
+                toggleBtn.classList.add("bg-emerald-500", "justify-end");
+                themeLabel.textContent = "Vibrant";
+                themeIcon.textContent = "☀️";
+
+                brandPanel.classList.remove("from-slate-900", "via-slate-800", "to-slate-950");
+                brandPanel.classList.add("from-[#00b0ff]/20", "via-[#00c853]", "to-[#004d40]");
+                overlay.classList.remove("bg-slate-950/85");
+                overlay.classList.add("bg-slate-950/65");
+            }
+        });
+    }
+
+    // 4. Password Toggle
+    function initializePasswordToggle() {
+        const toggleBtn = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("passwordInput");
+        const passwordIcon = document.getElementById("passwordIcon");
+
+        if (!toggleBtn || !passwordInput) return;
+
+        toggleBtn.addEventListener("click", () => {
+            const isHidden = passwordInput.type === "password";
+            passwordInput.type = isHidden ? "text" : "password";
+            passwordIcon.setAttribute("data-lucide", isHidden ? "eye" : "eye-off");
+            lucide.createIcons();
+        });
+    }
+</script>
+</body>
+</html>

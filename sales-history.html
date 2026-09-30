@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>SimplePOS | Sales History</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+                        primary: "#16A34A",
+                        secondary: "#22C55E"
+                    },
+
+                    fontFamily: {
+
+                        heading: [
+                            "Poppins",
+                            "sans-serif"
+                        ],
+
+                        body: [
+                            "Inter",
+                            "sans-serif"
+                        ]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body
+    class="bg-gray-100
+           dark:bg-slate-950
+           text-gray-800
+           dark:text-white
+           font-body
+           min-h-screen">
+
+
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
+
+<header
+    class="bg-white
+           dark:bg-slate-900
+           border-b
+           border-gray-200
+           dark:border-slate-800
+           px-6 py-4">
+
+    <div
+        class="max-w-7xl
+               mx-auto
+               flex
+               items-center
+               justify-between
+               gap-4">
+
+        <!-- BRAND -->
+
+        <div class="flex items-center gap-3">
+
+            <div
+                class="w-11 h-11
+                       bg-green-600
+                       text-white
+                       rounded-xl
+                       flex
+                       items-center
+                       justify-center
+                       shadow-sm">
+
+                <i data-lucide="receipt"></i>
+
+            </div>
+
+            <div>
+
+                <h1
+                    class="font-heading
+                           font-bold
+                           text-xl">
+
+                    Sales History
+
+                </h1>
+
+                <p
+                    class="text-xs
+                           text-gray-500
+                           dark:text-gray-400">
+
+                    Mwangaza Mini Mart
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- HEADER ACTIONS -->
+
+        <div class="flex items-center gap-3">
+
+            <!-- Theme -->
+
+            <button
+                id="themeToggle"
+                type="button"
+                aria-label="Toggle theme"
+                class="p-3
+                       rounded-xl
+                       bg-gray-100
+                       dark:bg-slate-800
+                       hover:scale-105
+                       transition">
+
+                <i
+                    id="themeIcon"
+                    data-lucide="moon">
+                </i>
+
+            </button>
+
+
+            <!-- New Sale -->
+
+            <a
+                href="sales.html"
+                class="bg-green-600
+                       hover:bg-green-700
+                       text-white
+                       px-5 py-3
+                       rounded-xl
+                       font-medium
+                       flex
+                       items-center
+                       gap-2
+                       transition">
+
+                <i
+                    data-lucide="plus"
+                    class="w-5">
+                </i>
+
+                <span class="hidden sm:inline">
+                    New Sale
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ===================================================== -->
+<!-- MAIN -->
+<!-- ===================================================== -->
+
+<main
+    class="max-w-7xl
+           mx-auto
+           px-6
+           py-8">
+
+
+    <!-- ================================================= -->
+    <!-- PAGE INTRO -->
+    <!-- ================================================= -->
+
+    <div class="mb-6">
+
+        <h2
+            class="text-2xl
+                   font-heading
+                   font-bold">
+
+            Sales Overview
+
+        </h2>
+
+        <p
+            class="text-sm
+                   text-gray-500
+                   dark:text-gray-400
+                   mt-1">
+
+            Track your sales performance and transaction history.
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- SUMMARY CARDS -->
+    <!-- ================================================= -->
+
+    <div
+        class="grid
+               grid-cols-1
+               sm:grid-cols-2
+               lg:grid-cols-4
+               gap-4
+               mb-6">
+
+
+        <!-- TODAY -->
+
+        <div
+            class="bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   p-5
+                   shadow-sm">
+
+            <div
+                class="flex
+                       items-center
+                       justify-between">
+
+                <div>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Today's Sales
+
+                    </p>
+
+                    <p
+                        id="todaySales"
+                        class="text-2xl
+                               font-heading
+                               font-bold
+                               mt-2">
+
+                        KSh 0
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="w-11 h-11
+                           rounded-xl
+                           bg-green-100
+                           dark:bg-green-900/30
+                           text-green-600
+                           flex
+                           items-center
+                           justify-center">
+
+                    <i data-lucide="banknote"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WEEK -->
+
+        <div
+            class="bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   p-5
+                   shadow-sm">
+
+            <div
+                class="flex
+                       items-center
+                       justify-between">
+
+                <div>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        This Week
+
+                    </p>
+
+                    <p
+                        id="weekSales"
+                        class="text-2xl
+                               font-heading
+                               font-bold
+                               mt-2">
+
+                        KSh 0
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="w-11 h-11
+                           rounded-xl
+                           bg-blue-100
+                           dark:bg-blue-900/30
+                           text-blue-600
+                           flex
+                           items-center
+                           justify-center">
+
+                    <i data-lucide="trending-up"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TRANSACTIONS -->
+
+        <div
+            class="bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   p-5
+                   shadow-sm">
+
+            <div
+                class="flex
+                       items-center
+                       justify-between">
+
+                <div>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Transactions
+
+                    </p>
+
+                    <p
+                        id="totalTransactions"
+                        class="text-2xl
+                               font-heading
+                               font-bold
+                               mt-2">
+
+                        0
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="w-11 h-11
+                           rounded-xl
+                           bg-purple-100
+                           dark:bg-purple-900/30
+                           text-purple-600
+                           flex
+                           items-center
+                           justify-center">
+
+                    <i data-lucide="receipt"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ITEMS -->
+
+        <div
+            class="bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   p-5
+                   shadow-sm">
+
+            <div
+                class="flex
+                       items-center
+                       justify-between">
+
+                <div>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Items Sold
+
+                    </p>
+
+                    <p
+                        id="totalItemsSold"
+                        class="text-2xl
+                               font-heading
+                               font-bold
+                               mt-2">
+
+                        0
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="w-11 h-11
+                           rounded-xl
+                           bg-orange-100
+                           dark:bg-orange-900/30
+                           text-orange-600
+                           flex
+                           items-center
+                           justify-center">
+
+                    <i data-lucide="package"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- ANALYTICS GRID -->
+    <!-- ================================================= -->
+
+    <div
+        class="grid
+               grid-cols-1
+               lg:grid-cols-3
+               gap-6
+               mb-6">
+
+
+        <!-- WEEKLY GRAPH -->
+
+        <div
+            class="lg:col-span-2
+                   bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   shadow-sm
+                   p-6">
+
+            <div
+                class="flex
+                       items-center
+                       justify-between
+                       mb-5">
+
+                <div>
+
+                    <h3
+                        class="font-heading
+                               font-semibold
+                               text-lg">
+
+                        Weekly Sales
+
+                    </h3>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Sales performance from Monday to Sunday
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="w-10 h-10
+                           rounded-xl
+                           bg-green-100
+                           dark:bg-green-900/30
+                           text-green-600
+                           flex
+                           items-center
+                           justify-center">
+
+                    <i data-lucide="bar-chart-3"></i>
+
+                </div>
+
+            </div>
+
+            <div class="relative h-80">
+
+                <canvas
+                    id="weeklySalesChart">
+                </canvas>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- INSIGHTS -->
+
+        <div
+            class="bg-white
+                   dark:bg-slate-900
+                   border
+                   border-gray-200
+                   dark:border-slate-800
+                   rounded-2xl
+                   shadow-sm
+                   p-6">
+
+            <h3
+                class="font-heading
+                       font-semibold
+                       text-lg
+                       mb-5">
+
+                Sales Insights
+
+            </h3>
+
+
+            <div class="space-y-5">
+
+
+                <!-- BEST DAY -->
+
+                <div>
+
+                    <p
+                        class="text-xs
+                               uppercase
+                               tracking-wide
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Best Sales Day
+
+                    </p>
+
+                    <p
+                        id="bestSalesDay"
+                        class="font-semibold
+                               mt-1">
+
+                        No data
+
+                    </p>
+
+                </div>
+
+
+                <!-- AVERAGE -->
+
+                <div>
+
+                    <p
+                        class="text-xs
+                               uppercase
+                               tracking-wide
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Average Transaction
+
+                    </p>
+
+                    <p
+                        id="averageTransaction"
+                        class="font-semibold
+                               mt-1">
+
+                        KSh 0
+
+                    </p>
+
+                </div>
+
+
+                <!-- BEST PRODUCT -->
+
+                <div>
+
+                    <p
+                        class="text-xs
+                               uppercase
+                               tracking-wide
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        Most Sold Product
+
+                    </p>
+
+                    <p
+                        id="bestProduct"
+                        class="font-semibold
+                               mt-1">
+
+                        No data
+
+                    </p>
+
+                </div>
+
+
+                <!-- TOTAL -->
+
+                <div>
+
+                    <p
+                        class="text-xs
+                               uppercase
+                               tracking-wide
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        All-Time Revenue
+
+                    </p>
+
+                    <p
+                        id="allTimeRevenue"
+                        class="font-semibold
+                               text-green-600
+                               mt-1">
+
+                        KSh 0
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- PAYMENT BREAKDOWN -->
+    <!-- ================================================= -->
+
+    <div
+        class="bg-white
+               dark:bg-slate-900
+               border
+               border-gray-200
+               dark:border-slate-800
+               rounded-2xl
+               shadow-sm
+               p-6
+               mb-6">
+
+        <div class="mb-5">
+
+            <h3
+                class="font-heading
+                       font-semibold
+                       text-lg">
+
+                Payment Breakdown
+
+            </h3>
+
+            <p
+                class="text-sm
+                       text-gray-500
+                       dark:text-gray-400">
+
+                Revenue grouped by payment method
+
+            </p>
+
+        </div>
+
+
+        <div
+            id="paymentBreakdown"
+            class="grid
+                   grid-cols-1
+                   sm:grid-cols-2
+                   lg:grid-cols-4
+                   gap-4">
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- SALES HISTORY -->
+    <!-- ================================================= -->
+
+    <div
+        class="bg-white
+               dark:bg-slate-900
+               rounded-2xl
+               shadow-sm
+               border
+               border-gray-200
+               dark:border-slate-800
+               overflow-hidden">
+
+
+        <!-- HEADER -->
+
+        <div
+            class="p-6
+                   border-b
+                   border-gray-200
+                   dark:border-slate-800">
+
+            <div
+                class="flex
+                       flex-col
+                       md:flex-row
+                       md:items-center
+                       md:justify-between
+                       gap-4">
+
+                <div>
+
+                    <h3
+                        class="font-heading
+                               font-semibold
+                               text-lg">
+
+                        Transaction History
+
+                    </h3>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400
+                               mt-1">
+
+                        All recorded sales
+
+                    </p>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="relative w-full md:w-80">
+
+                    <i
+                        data-lucide="search"
+                        class="absolute
+                               left-4
+                               top-1/2
+                               -translate-y-1/2
+                               text-gray-400
+                               w-5">
+                    </i>
+
+                    <input
+                        id="salesSearch"
+                        type="text"
+                        placeholder="Search receipt or payment..."
+                        class="w-full
+                               bg-gray-50
+                               dark:bg-slate-800
+                               border
+                               border-gray-200
+                               dark:border-slate-700
+                               rounded-xl
+                               pl-12
+                               pr-4
+                               py-3
+                               outline-none
+                               focus:ring-2
+                               focus:ring-green-500">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <thead
+                    class="bg-gray-50
+                           dark:bg-slate-800">
+
+                    <tr>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Receipt
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Date
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Time
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Items
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Amount
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Payment
+
+                        </th>
+
+                        <th
+                            class="px-6 py-4 text-left text-sm">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="salesHistory">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+            id="emptyHistory"
+            class="hidden
+                   text-center
+                   py-16">
+
+            <i
+                data-lucide="receipt"
+                class="w-12 h-12
+                       mx-auto
+                       text-gray-300">
+
+            </i>
+
+            <p
+                class="mt-4
+                       text-gray-500">
+
+                No sales recorded yet.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================================== -->
+
+<script src="app.js"></script>
+
+<script src="sales-history.js"></script>
+
+
+</body>
+
+</html>

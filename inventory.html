@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SimplePOS | Inventory</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#16A34A",
+                        secondary: "#22C55E"
+
+                    },
+
+                    fontFamily: {
+
+                        heading: ["Poppins", "sans-serif"],
+                        body: ["Inter", "sans-serif"]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body
+    class="bg-gray-100 dark:bg-slate-950 text-gray-800 dark:text-white font-body transition-colors duration-300">
+
+
+<div class="min-h-screen flex">
+
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside
+        class="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex-col">
+
+        <!-- LOGO -->
+
+        <div class="p-6 border-b border-gray-200 dark:border-slate-800">
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-11 h-11 bg-green-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+
+                    <i data-lucide="shopping-cart"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="font-heading font-bold text-xl">
+                        SimplePOS
+                    </h1>
+
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Mwangaza Mini Mart
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="flex-1 p-4 space-y-2">
+
+            <a
+                href="dashboard.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="layout-dashboard" class="w-5"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="sales.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="shopping-bag" class="w-5"></i>
+
+                Sales
+
+            </a>
+
+
+            <a
+                href="products.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="package" class="w-5"></i>
+
+                Products
+
+            </a>
+
+
+            <!-- ACTIVE -->
+
+            <a
+                href="inventory.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium">
+
+                <i data-lucide="boxes" class="w-5"></i>
+
+                Inventory
+
+            </a>
+
+
+            <a
+                href="sales-history.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="receipt" class="w-5"></i>
+
+                Sales History
+
+            </a>
+
+
+            <a
+                href="reports.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="bar-chart-3" class="w-5"></i>
+
+                Reports
+
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                <i data-lucide="settings" class="w-5"></i>
+
+                Settings
+
+            </a>
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <div class="p-4 border-t border-gray-200 dark:border-slate-800">
+
+            <a
+                href="index.html"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+
+                <i data-lucide="log-out" class="w-5"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="flex-1 min-w-0">
+
+
+        <!-- TOP BAR -->
+
+        <header
+            class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-2xl font-heading font-bold">
+                        Inventory
+                    </h2>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Monitor and manage your shop stock.
+                    </p>
+
+                </div>
+
+
+                <div class="flex items-center gap-3">
+
+                    <div class="hidden md:block text-right">
+
+                        <p
+                            id="currentDate"
+                            class="text-sm font-medium">
+                        </p>
+
+                        <p
+                            id="currentTime"
+                            class="text-xs text-gray-500 dark:text-gray-400">
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="themeToggle"
+                        type="button"
+                        class="p-3 rounded-xl bg-gray-100 dark:bg-slate-800 hover:scale-105 transition">
+
+                        <i
+                            id="themeIcon"
+                            data-lucide="moon">
+                        </i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- CONTENT -->
+
+        <div class="p-6">
+
+
+            <!-- ================================================= -->
+            <!-- STATISTICS -->
+            <!-- ================================================= -->
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+
+                <!-- TOTAL PRODUCTS -->
+
+                <div
+                    class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Total Products
+                            </p>
+
+                            <p
+                                id="totalProducts"
+                                class="text-3xl font-heading font-bold mt-2">
+                                0
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="w-11 h-11 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-xl flex items-center justify-center">
+
+                            <i data-lucide="package"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TOTAL UNITS -->
+
+                <div
+                    class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Total Units
+                            </p>
+
+                            <p
+                                id="totalUnits"
+                                class="text-3xl font-heading font-bold mt-2">
+                                0
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="w-11 h-11 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-xl flex items-center justify-center">
+
+                            <i data-lucide="boxes"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LOW STOCK -->
+
+                <div
+                    class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Low Stock
+                            </p>
+
+                            <p
+                                id="lowStockProducts"
+                                class="text-3xl font-heading font-bold mt-2">
+                                0
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="w-11 h-11 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-xl flex items-center justify-center">
+
+                            <i data-lucide="alert-triangle"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- OUT OF STOCK -->
+
+                <div
+                    class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Out of Stock
+                            </p>
+
+                            <p
+                                id="outOfStockProducts"
+                                class="text-3xl font-heading font-bold mt-2">
+                                0
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="w-11 h-11 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-xl flex items-center justify-center">
+
+                            <i data-lucide="package-x"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- SEARCH + FILTER -->
+            <!-- ================================================= -->
+
+            <div
+                class="flex flex-col md:flex-row gap-4 justify-between mb-6">
+
+                <div class="relative flex-1 max-w-xl">
+
+                    <i
+                        data-lucide="search"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5">
+                    </i>
+
+                    <input
+                        id="inventorySearch"
+                        type="text"
+                        placeholder="Search inventory..."
+                        class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl pl-12 pr-5 py-3.5 outline-none focus:ring-2 focus:ring-green-500 transition">
+
+                </div>
+
+
+                <select
+                    id="stockFilter"
+                    class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500">
+
+                    <option value="all">
+                        All Stock
+                    </option>
+
+                    <option value="in">
+                        In Stock
+                    </option>
+
+                    <option value="low">
+                        Low Stock
+                    </option>
+
+                    <option value="out">
+                        Out of Stock
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- INVENTORY TABLE -->
+            <!-- ================================================= -->
+
+            <div
+                class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-left">
+
+                        <thead
+                            class="bg-gray-50 dark:bg-slate-800/70 border-b border-gray-200 dark:border-slate-800">
+
+                            <tr>
+
+                                <th class="px-6 py-4 text-sm font-semibold">
+                                    Product
+                                </th>
+
+                                <th class="px-6 py-4 text-sm font-semibold">
+                                    Category
+                                </th>
+
+                                <th class="px-6 py-4 text-sm font-semibold">
+                                    Price
+                                </th>
+
+                                <th class="px-6 py-4 text-sm font-semibold">
+                                    Current Stock
+                                </th>
+
+                                <th class="px-6 py-4 text-sm font-semibold">
+                                    Status
+                                </th>
+
+                                <th class="px-6 py-4 text-sm font-semibold text-right">
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="inventoryTable"
+                            class="divide-y divide-gray-100 dark:divide-slate-800">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- EMPTY -->
+
+                <div
+                    id="emptyInventory"
+                    class="hidden p-12 text-center">
+
+                    <div
+                        class="w-16 h-16 mx-auto rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-400">
+
+                        <i
+                            data-lucide="package-search"
+                            class="w-8 h-8">
+                        </i>
+
+                    </div>
+
+                    <h3 class="font-semibold text-lg mt-4">
+                        No inventory found
+                    </h3>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Try changing your search or filter.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- STOCK ADJUSTMENT MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="stockModal"
+    class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+
+
+    <div
+        class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden">
+
+
+        <!-- HEADER -->
+
+        <div
+            class="px-6 py-5 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between">
+
+            <div>
+
+                <h2
+                    id="stockModalTitle"
+                    class="text-xl font-heading font-bold">
+                    Adjust Stock
+                </h2>
+
+                <p
+                    id="stockProductName"
+                    class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Product
+                </p>
+
+            </div>
+
+
+            <button
+                id="closeStockModal"
+                type="button"
+                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+
+
+        <!-- FORM -->
+
+        <form
+            id="stockForm"
+            class="p-6 space-y-5">
+
+
+            <div>
+
+                <label
+                    for="stockAction"
+                    class="block text-sm font-medium mb-2">
+
+                    Action
+
+                </label>
+
+                <select
+                    id="stockAction"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-700 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-green-500">
+
+                    <option value="add">
+                        Add Stock
+                    </option>
+
+                    <option value="remove">
+                        Remove Stock
+                    </option>
+
+                    <option value="set">
+                        Set Stock Level
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div>
+
+                <label
+                    for="stockQuantity"
+                    class="block text-sm font-medium mb-2">
+
+                    Quantity
+
+                </label>
+
+                <input
+                    id="stockQuantity"
+                    type="number"
+                    min="0"
+                    required
+                    placeholder="Enter quantity"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-700 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-green-500">
+
+            </div>
+
+
+
+            <div
+                class="p-4 rounded-xl bg-gray-50 dark:bg-slate-800">
+
+                <div class="flex justify-between text-sm">
+
+                    <span class="text-gray-500">
+                        Current Stock
+                    </span>
+
+                    <span
+                        id="currentStockDisplay"
+                        class="font-semibold">
+                        0
+                    </span>
+
+                </div>
+
+                <div class="flex justify-between mt-2">
+
+                    <span class="text-gray-500">
+                        New Stock
+                    </span>
+
+                    <span
+                        id="newStockDisplay"
+                        class="font-bold text-green-600">
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="flex gap-3">
+
+                <button
+                    type="button"
+                    id="cancelStock"
+                    class="flex-1 border border-gray-300 dark:border-slate-700 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold">
+
+                    Save Adjustment
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script src="inventory.js"></script>
+
+</body>
+
+</html>

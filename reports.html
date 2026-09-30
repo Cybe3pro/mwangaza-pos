@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>SimplePOS | Reports</title>
+
+
+    <!-- ================================================= -->
+    <!-- TAILWIND CSS -->
+    <!-- ================================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ================================================= -->
+    <!-- GOOGLE FONTS -->
+    <!-- ================================================= -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+
+    <!-- ================================================= -->
+    <!-- LUCIDE ICONS -->
+    <!-- ================================================= -->
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+    <!-- ================================================= -->
+    <!-- CHART.JS -->
+    <!-- ================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ================================================= -->
+    <!-- PDF EXPORT -->
+    <!-- ================================================= -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+
+    <!-- ================================================= -->
+    <!-- TAILWIND CONFIG -->
+    <!-- ================================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#16A34A",
+                        secondary: "#22C55E"
+
+                    },
+
+                    fontFamily: {
+
+                        heading: [
+                            "Poppins",
+                            "sans-serif"
+                        ],
+
+                        body: [
+                            "Inter",
+                            "sans-serif"
+                        ]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body
+    class="
+        bg-gray-100
+        dark:bg-slate-950
+        text-gray-800
+        dark:text-white
+        font-body
+        transition-colors
+        duration-300
+    ">
+
+
+<!-- ================================================= -->
+<!-- APPLICATION -->
+<!-- ================================================= -->
+
+<div class="min-h-screen flex">
+
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside
+        class="
+            hidden
+            lg:flex
+            w-64
+            bg-white
+            dark:bg-slate-900
+            border-r
+            border-gray-200
+            dark:border-slate-800
+            flex-col
+        ">
+
+
+        <!-- LOGO -->
+
+        <div
+            class="
+                p-6
+                border-b
+                border-gray-200
+                dark:border-slate-800
+            ">
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="
+                        w-11
+                        h-11
+                        bg-green-600
+                        rounded-xl
+                        flex
+                        items-center
+                        justify-center
+                        text-white
+                        shadow-lg
+                    ">
+
+                    <i data-lucide="shopping-cart"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h1
+                        class="
+                            font-heading
+                            font-bold
+                            text-xl
+                        ">
+
+                        SimplePOS
+
+                    </h1>
+
+
+                    <p
+                        class="
+                            text-xs
+                            text-gray-500
+                            dark:text-gray-400
+                        ">
+
+                        Mwangaza Mini Mart
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="flex-1 p-4 space-y-2">
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="dashboard.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="layout-dashboard"
+                    class="w-5">
+                </i>
+
+                Dashboard
+
+            </a>
+
+
+            <!-- SALES -->
+
+            <a
+                href="sales.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="shopping-bag"
+                    class="w-5">
+                </i>
+
+                Sales
+
+            </a>
+
+
+            <!-- PRODUCTS -->
+
+            <a
+                href="products.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="package"
+                    class="w-5">
+                </i>
+
+                Products
+
+            </a>
+
+
+            <!-- INVENTORY -->
+
+            <a
+                href="inventory.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="boxes"
+                    class="w-5">
+                </i>
+
+                Inventory
+
+            </a>
+
+
+            <!-- SALES HISTORY -->
+
+            <a
+                href="sales-history.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="receipt"
+                    class="w-5">
+                </i>
+
+                Sales History
+
+            </a>
+
+
+            <!-- REPORTS - ACTIVE -->
+
+            <a
+                href="reports.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-green-100
+                    dark:bg-green-900/30
+                    text-green-700
+                    dark:text-green-400
+                    font-medium
+                ">
+
+                <i
+                    data-lucide="bar-chart-3"
+                    class="w-5">
+                </i>
+
+                Reports
+
+            </a>
+
+
+            <!-- SETTINGS -->
+
+            <a
+                href="settings.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-slate-800
+                    transition
+                ">
+
+                <i
+                    data-lucide="settings"
+                    class="w-5">
+                </i>
+
+                Settings
+
+            </a>
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <div
+            class="
+                p-4
+                border-t
+                border-gray-200
+                dark:border-slate-800
+            ">
+
+            <a
+                href="index.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-red-500
+                    hover:bg-red-50
+                    dark:hover:bg-red-900/20
+                    transition
+                ">
+
+                <i
+                    data-lucide="log-out"
+                    class="w-5">
+                </i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================= -->
+
+    <main class="flex-1 min-w-0">
+
+
+        <!-- ================================================= -->
+        <!-- TOP BAR -->
+        <!-- ================================================= -->
+
+        <header
+            class="
+                bg-white
+                dark:bg-slate-900
+                border-b
+                border-gray-200
+                dark:border-slate-800
+                px-6
+                py-4
+            ">
+
+            <div
+                class="
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                ">
+
+
+                <!-- TITLE -->
+
+                <div>
+
+                    <h2
+                        class="
+                            text-2xl
+                            font-heading
+                            font-bold
+                        ">
+
+                        Reports
+
+                    </h2>
+
+
+                    <p
+                        class="
+                            text-sm
+                            text-gray-500
+                            dark:text-gray-400
+                            mt-1
+                        ">
+
+                        Understand your shop's sales performance.
+
+                    </p>
+
+                </div>
+
+
+                <!-- RIGHT SIDE -->
+
+                <div
+                    class="
+                        flex
+                        items-center
+                        gap-3
+                    ">
+
+
+                    <!-- DATE / TIME -->
+
+                    <div
+                        class="
+                            hidden
+                            md:block
+                            text-right
+                        ">
+
+                        <p
+                            id="currentDate"
+                            class="
+                                text-sm
+                                font-medium
+                            ">
+                        </p>
+
+
+                        <p
+                            id="currentTime"
+                            class="
+                                text-xs
+                                text-gray-500
+                                dark:text-gray-400
+                            ">
+                        </p>
+
+                    </div>
+
+
+                    <!-- THEME -->
+
+                    <button
+                        id="themeToggle"
+                        type="button"
+                        aria-label="Toggle theme"
+                        class="
+                            p-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-slate-800
+                            hover:scale-105
+                            transition
+                        ">
+
+                        <i
+                            id="themeIcon"
+                            data-lucide="moon">
+                        </i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================================================= -->
+        <!-- PAGE CONTENT -->
+        <!-- ================================================= -->
+
+        <div class="p-6">
+
+
+            <!-- ================================================= -->
+            <!-- REPORT CONTROLS -->
+            <!-- ================================================= -->
+
+            <!-- ================================================= -->
+<!-- REPORT CONTROLS -->
+<!-- ================================================= -->
+
+<div
+    class="
+        flex
+        flex-col
+        lg:flex-row
+        lg:items-center
+        lg:justify-between
+        gap-4
+        mb-6
+    ">
+
+    <!-- REPORT TITLE -->
+
+    <div>
+
+        <h3
+            class="
+                text-lg
+                font-heading
+                font-semibold
+            ">
+
+            Sales Overview
+
+        </h3>
+
+        <p
+            class="
+                text-sm
+                text-gray-500
+                dark:text-gray-400
+            ">
+
+            Review your sales performance over time.
+
+        </p>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div
+        class="
+            flex
+            flex-col
+            sm:flex-row
+            gap-3
+        ">
+
+        <!-- PERIOD -->
+
+        <div
+            class="
+                flex
+                items-center
+                gap-2
+            ">
+
+            <label
+                for="reportPeriod"
+                class="
+                    text-sm
+                    text-gray-500
+                    dark:text-gray-400
+                    whitespace-nowrap
+                ">
+
+                Period:
+
+            </label>
+
+
+            <select
+                id="reportPeriod"
+                class="
+                    px-4
+                    py-2.5
+                    rounded-xl
+                    border
+                    border-gray-200
+                    dark:border-slate-700
+                    bg-white
+                    dark:bg-slate-900
+                    outline-none
+                    focus:ring-2
+                    focus:ring-green-500
+                ">
+
+                <option value="today">
+                    Today
+                </option>
+
+                <option
+                    value="week"
+                    selected>
+                    This Week
+                </option>
+
+                <option value="month">
+                    This Month
+                </option>
+
+                <option value="all">
+                    All Time
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- EXPORT BUTTONS -->
+
+        <div
+            class="
+                flex
+                gap-2
+            ">
+
+            <!-- CSV -->
+
+            <button
+                id="exportCSV"
+                type="button"
+                class="
+                    flex
+                    items-center
+                    justify-center
+                    gap-2
+                    px-4
+                    py-2.5
+                    rounded-xl
+                    border
+                    border-green-200
+                    dark:border-green-800
+                    bg-green-50
+                    dark:bg-green-900/20
+                    text-green-700
+                    dark:text-green-400
+                    hover:bg-green-100
+                    dark:hover:bg-green-900/40
+                    font-medium
+                    transition
+                    whitespace-nowrap
+                ">
+
+                <i
+                    data-lucide="file-spreadsheet"
+                    class="w-4 h-4">
+                </i>
+
+                <span class="hidden sm:inline">
+                    CSV
+                </span>
+
+            </button>
+
+
+            <!-- PDF -->
+
+            <button
+                id="exportPDF"
+                type="button"
+                class="
+                    flex
+                    items-center
+                    justify-center
+                    gap-2
+                    px-4
+                    py-2.5
+                    rounded-xl
+                    bg-green-600
+                    hover:bg-green-700
+                    text-white
+                    font-medium
+                    shadow-sm
+                    transition
+                    whitespace-nowrap
+                ">
+
+                <i
+                    data-lucide="file-text"
+                    class="w-4 h-4">
+                </i>
+
+                <span class="hidden sm:inline">
+                    PDF
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+            <!-- ================================================= -->
+            <!-- SUMMARY CARDS -->
+            <!-- ================================================= -->
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-2
+                    xl:grid-cols-4
+                    gap-4
+                    mb-6
+                ">
+
+
+                <!-- TOTAL SALES -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-5
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                        ">
+
+                        <div>
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Total Sales
+
+                            </p>
+
+
+                            <p
+                                id="reportTotalSales"
+                                class="
+                                    text-2xl
+                                    font-heading
+                                    font-bold
+                                    mt-2
+                                ">
+
+                                KSh 0
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                w-11
+                                h-11
+                                bg-green-100
+                                dark:bg-green-900/30
+                                text-green-600
+                                rounded-xl
+                                flex
+                                items-center
+                                justify-center
+                            ">
+
+                            <i data-lucide="banknote"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTIONS -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-5
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                        ">
+
+                        <div>
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Transactions
+
+                            </p>
+
+
+                            <p
+                                id="reportTransactions"
+                                class="
+                                    text-2xl
+                                    font-heading
+                                    font-bold
+                                    mt-2
+                                ">
+
+                                0
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                w-11
+                                h-11
+                                bg-blue-100
+                                dark:bg-blue-900/30
+                                text-blue-600
+                                rounded-xl
+                                flex
+                                items-center
+                                justify-center
+                            ">
+
+                            <i data-lucide="receipt"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PRODUCTS SOLD -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-5
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                        ">
+
+                        <div>
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Products Sold
+
+                            </p>
+
+
+                            <p
+                                id="reportProductsSold"
+                                class="
+                                    text-2xl
+                                    font-heading
+                                    font-bold
+                                    mt-2
+                                ">
+
+                                0
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                w-11
+                                h-11
+                                bg-purple-100
+                                dark:bg-purple-900/30
+                                text-purple-600
+                                rounded-xl
+                                flex
+                                items-center
+                                justify-center
+                            ">
+
+                            <i data-lucide="package-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- AVERAGE SALE -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-5
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                        ">
+
+                        <div>
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Average Sale
+
+                            </p>
+
+
+                            <p
+                                id="reportAverageSale"
+                                class="
+                                    text-2xl
+                                    font-heading
+                                    font-bold
+                                    mt-2
+                                ">
+
+                                KSh 0
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                w-11
+                                h-11
+                                bg-orange-100
+                                dark:bg-orange-900/30
+                                text-orange-600
+                                rounded-xl
+                                flex
+                                items-center
+                                justify-center
+                            ">
+
+                            <i data-lucide="trending-up"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- CHARTS -->
+            <!-- ================================================= -->
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    xl:grid-cols-3
+                    gap-6
+                    mb-6
+                ">
+
+
+                <!-- SALES TREND -->
+
+                <div
+                    class="
+                        xl:col-span-2
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            mb-6
+                        ">
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                    text-lg
+                                ">
+
+                                Sales Trend
+
+                            </h3>
+
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Revenue generated during the selected period.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="relative h-80">
+
+                        <canvas
+                            id="salesTrendChart">
+                        </canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PAYMENT METHODS -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    ">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                font-heading
+                                font-semibold
+                                text-lg
+                            ">
+
+                            Payment Methods
+
+                        </h3>
+
+
+                        <p
+                            class="
+                                text-sm
+                                text-gray-500
+                                dark:text-gray-400
+                            ">
+
+                            How customers are paying.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="relative h-64">
+
+                        <canvas
+                            id="paymentChart">
+                        </canvas>
+
+                    </div>
+
+
+                    <div
+                        id="paymentSummary"
+                        class="
+                            mt-5
+                            space-y-3
+                        ">
+
+                        <!-- JavaScript -->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- BEST SELLING PRODUCTS -->
+            <!-- ================================================= -->
+
+            <div
+                class="
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-gray-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                ">
+
+
+                <div
+                    class="
+                        p-6
+                        border-b
+                        border-gray-200
+                        dark:border-slate-800
+                    ">
+
+                    <div>
+
+                        <h3
+                            class="
+                                font-heading
+                                font-semibold
+                                text-lg
+                            ">
+
+                            Best-Selling Products
+
+                        </h3>
+
+
+                        <p
+                            class="
+                                text-sm
+                                text-gray-500
+                                dark:text-gray-400
+                                mt-1
+                            ">
+
+                            Products generating the most sales.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full">
+
+                        <thead
+                            class="
+                                bg-gray-50
+                                dark:bg-slate-800/70
+                            ">
+
+                            <tr>
+
+                                <th
+                                    class="
+                                        px-6
+                                        py-4
+                                        text-left
+                                        text-sm
+                                        font-semibold
+                                    ">
+
+                                    Rank
+
+                                </th>
+
+
+                                <th
+                                    class="
+                                        px-6
+                                        py-4
+                                        text-left
+                                        text-sm
+                                        font-semibold
+                                    ">
+
+                                    Product
+
+                                </th>
+
+
+                                <th
+                                    class="
+                                        px-6
+                                        py-4
+                                        text-left
+                                        text-sm
+                                        font-semibold
+                                    ">
+
+                                    Units Sold
+
+                                </th>
+
+
+                                <th
+                                    class="
+                                        px-6
+                                        py-4
+                                        text-left
+                                        text-sm
+                                        font-semibold
+                                    ">
+
+                                    Revenue
+
+                                </th>
+
+
+                                <th
+                                    class="
+                                        px-6
+                                        py-4
+                                        text-right
+                                        text-sm
+                                        font-semibold
+                                    ">
+
+                                    Performance
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="bestSellingProducts"
+                            class="
+                                divide-y
+                                divide-gray-100
+                                dark:divide-slate-800
+                            ">
+
+                            <!-- JavaScript -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- REPORT FOOTER CARDS -->
+            <!-- ================================================= -->
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    md:grid-cols-2
+                    gap-6
+                ">
+
+
+                <!-- INVENTORY SNAPSHOT -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    ">
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            mb-5
+                        ">
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                    text-lg
+                                ">
+
+                                Inventory Snapshot
+
+                            </h3>
+
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    dark:text-gray-400
+                                ">
+
+                                Current stock position.
+
+                            </p>
+
+                        </div>
+
+
+                        <i
+                            data-lucide="boxes"
+                            class="
+                                text-green-600
+                                w-6
+                                h-6
+                            ">
+                        </i>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-3
+                            gap-3
+                        ">
+
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-gray-50
+                                dark:bg-slate-800
+                                p-4
+                                text-center
+                            ">
+
+                            <p
+                                id="reportInventoryProducts"
+                                class="
+                                    text-2xl
+                                    font-bold
+                                ">
+
+                                0
+
+                            </p>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                    dark:text-gray-400
+                                    mt-1
+                                ">
+
+                                Products
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-orange-50
+                                dark:bg-orange-900/20
+                                p-4
+                                text-center
+                            ">
+
+                            <p
+                                id="reportLowStock"
+                                class="
+                                    text-2xl
+                                    font-bold
+                                    text-orange-600
+                                ">
+
+                                0
+
+                            </p>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                    dark:text-gray-400
+                                    mt-1
+                                ">
+
+                                Low Stock
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-red-50
+                                dark:bg-red-900/20
+                                p-4
+                                text-center
+                            ">
+
+                            <p
+                                id="reportOutOfStock"
+                                class="
+                                    text-2xl
+                                    font-bold
+                                    text-red-600
+                                ">
+
+                                0
+
+                            </p>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                    dark:text-gray-400
+                                    mt-1
+                                ">
+
+                                Out of Stock
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div
+                    class="
+                        bg-white
+                        dark:bg-slate-900
+                        border
+                        border-gray-200
+                        dark:border-slate-800
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    ">
+
+                    <h3
+                        class="
+                            font-heading
+                            font-semibold
+                            text-lg
+                            mb-1
+                        ">
+
+                        Quick Actions
+
+                    </h3>
+
+
+                    <p
+                        class="
+                            text-sm
+                            text-gray-500
+                            dark:text-gray-400
+                            mb-5
+                        ">
+
+                        Continue managing your shop.
+
+                    </p>
+
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-2
+                            gap-3
+                        ">
+
+
+                        <a
+                            href="sales.html"
+                            class="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-green-600
+                                hover:bg-green-700
+                                text-white
+                                font-medium
+                                transition
+                            ">
+
+                            <i
+                                data-lucide="shopping-cart"
+                                class="w-5">
+                            </i>
+
+                            New Sale
+
+                        </a>
+
+
+                        <a
+                            href="products.html"
+                            class="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-3
+                                rounded-xl
+                                border
+                                border-gray-200
+                                dark:border-slate-700
+                                hover:bg-gray-100
+                                dark:hover:bg-slate-800
+                                font-medium
+                                transition
+                            ">
+
+                            <i
+                                data-lucide="package"
+                                class="w-5">
+                            </i>
+
+                            Products
+
+                        </a>
+
+
+                        <a
+                            href="inventory.html"
+                            class="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-3
+                                rounded-xl
+                                border
+                                border-gray-200
+                                dark:border-slate-700
+                                hover:bg-gray-100
+                                dark:hover:bg-slate-800
+                                font-medium
+                                transition
+                            ">
+
+                            <i
+                                data-lucide="boxes"
+                                class="w-5">
+                            </i>
+
+                            Inventory
+
+                        </a>
+
+
+                        <a
+                            href="sales-history.html"
+                            class="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-3
+                                rounded-xl
+                                border
+                                border-gray-200
+                                dark:border-slate-700
+                                hover:bg-gray-100
+                                dark:hover:bg-slate-800
+                                font-medium
+                                transition
+                            ">
+
+                            <i
+                                data-lucide="receipt"
+                                class="w-5">
+                            </i>
+
+                            Sales History
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script src="reports.js"></script>
+
+
+</body>
+
+</html>

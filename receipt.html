@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SimplePOS | Receipt</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+                        primary: "#16A34A",
+                        secondary: "#22C55E"
+                    },
+
+                    fontFamily: {
+
+                        heading: [
+                            "Poppins",
+                            "sans-serif"
+                        ],
+
+                        body: [
+                            "Inter",
+                            "sans-serif"
+                        ]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body
+    class="bg-gray-100 dark:bg-slate-950
+           text-gray-800 dark:text-gray-100
+           font-body
+           min-h-screen
+           transition-colors duration-300">
+
+
+<!-- ========================================= -->
+<!-- TOP BAR -->
+<!-- ========================================= -->
+
+<header
+    class="bg-white dark:bg-slate-900
+           border-b border-gray-200 dark:border-slate-800
+           px-6 py-4">
+
+    <div
+        class="max-w-5xl mx-auto
+               flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <div
+                class="w-11 h-11
+                       bg-green-600
+                       rounded-xl
+                       flex items-center justify-center
+                       text-white">
+
+                <i data-lucide="shopping-cart"></i>
+
+            </div>
+
+            <div>
+
+                <h1
+                    class="font-heading
+                           font-bold
+                           text-xl">
+
+                    SimplePOS
+
+                </h1>
+
+                <p
+                    class="text-xs
+                           text-gray-500
+                           dark:text-gray-400">
+
+                    Mwangaza Mini Mart
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Theme -->
+
+        <button
+            id="themeToggle"
+            aria-label="Toggle theme"
+            class="p-3
+                   rounded-xl
+                   bg-gray-100
+                   dark:bg-slate-800
+                   hover:scale-105
+                   transition">
+
+            <i
+                id="themeIcon"
+                data-lucide="moon">
+            </i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- ========================================= -->
+<!-- RECEIPT AREA -->
+<!-- ========================================= -->
+
+<main
+    class="max-w-5xl
+           mx-auto
+           px-6
+           py-10">
+
+
+    <!-- Page Heading -->
+
+    <div
+        class="flex flex-col
+               md:flex-row
+               md:items-center
+               md:justify-between
+               gap-4
+               mb-8">
+
+        <div>
+
+            <p
+                class="text-green-600
+                       font-medium
+                       text-sm">
+
+                SALE COMPLETED
+
+            </p>
+
+            <h2
+                class="text-3xl
+                       font-heading
+                       font-bold">
+
+                Digital Receipt
+
+            </h2>
+
+            <p
+                class="text-gray-500
+                       dark:text-gray-400
+                       mt-1">
+
+                Transaction completed successfully.
+
+            </p>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="flex gap-3">
+
+            <button
+                onclick="window.print()"
+                class="flex items-center gap-2
+                       bg-green-600
+                       hover:bg-green-700
+                       text-white
+                       px-5 py-3
+                       rounded-xl
+                       font-medium
+                       transition">
+
+                <i data-lucide="printer"
+                   class="w-5">
+                </i>
+
+                Print Receipt
+
+            </button>
+
+
+            <button
+                onclick="window.location.href='sales.html'"
+                class="flex items-center gap-2
+                       border
+                       border-gray-300
+                       dark:border-slate-700
+                       px-5 py-3
+                       rounded-xl
+                       font-medium
+                       hover:bg-gray-100
+                       dark:hover:bg-slate-800
+                       transition">
+
+                <i data-lucide="plus"
+                   class="w-5">
+                </i>
+
+                New Sale
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- RECEIPT CARD -->
+    <!-- ========================================= -->
+
+    <section
+        id="receipt"
+        class="max-w-xl
+               mx-auto
+               bg-white
+               dark:bg-slate-900
+               rounded-3xl
+               shadow-xl
+               border
+               border-gray-200
+               dark:border-slate-800
+               overflow-hidden">
+
+
+        <!-- Receipt Header -->
+
+        <div
+            class="bg-green-600
+                   text-white
+                   text-center
+                   px-8
+                   py-8">
+
+            <div
+                class="w-16 h-16
+                       mx-auto
+                       bg-white
+                       text-green-600
+                       rounded-2xl
+                       flex
+                       items-center
+                       justify-center
+                       mb-4">
+
+                <i
+                    data-lucide="shopping-bag"
+                    class="w-8">
+                </i>
+
+            </div>
+
+
+            <h1
+                class="text-2xl
+                       font-heading
+                       font-bold">
+
+                MWANGAZA MINI MART
+
+            </h1>
+
+
+            <p
+                class="text-green-100
+                       text-sm
+                       mt-1">
+
+                SimplePOS
+
+            </p>
+
+
+            <p
+                class="text-green-100
+                       text-sm
+                       mt-3">
+
+                Your neighbourhood mini mart
+
+            </p>
+
+        </div>
+
+
+
+        <!-- Receipt Information -->
+
+        <div class="p-8">
+
+
+            <div
+                class="flex
+                       justify-between
+                       text-sm
+                       mb-6">
+
+                <div>
+
+                    <p class="text-gray-500">
+                        Receipt Number
+                    </p>
+
+                    <p
+                        id="receiptNumber"
+                        class="font-semibold mt-1">
+
+                        #INV-00001
+
+                    </p>
+
+                </div>
+
+
+                <div class="text-right">
+
+                    <p class="text-gray-500">
+                        Date & Time
+                    </p>
+
+                    <p
+                        id="receiptDate"
+                        class="font-semibold mt-1">
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Divider -->
+
+            <div
+                class="border-t
+                       border-dashed
+                       border-gray-300
+                       dark:border-slate-700
+                       mb-6">
+            </div>
+
+
+
+            <!-- Items -->
+
+            <div
+                id="receiptItems"
+                class="space-y-4">
+
+                <!-- Items inserted by JavaScript -->
+
+            </div>
+
+
+
+            <!-- Divider -->
+
+            <div
+                class="border-t
+                       border-dashed
+                       border-gray-300
+                       dark:border-slate-700
+                       my-6">
+            </div>
+
+
+
+            <!-- Summary -->
+
+            <div class="space-y-3">
+
+
+                <div
+                    class="flex
+                           justify-between
+                           text-sm">
+
+                    <span class="text-gray-500">
+                        Subtotal
+                    </span>
+
+                    <span id="receiptSubtotal">
+                        KSh 0
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="flex
+                           justify-between
+                           text-sm">
+
+                    <span class="text-gray-500">
+                        Discount
+                    </span>
+
+                    <span>
+                        KSh 0
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="flex
+                           justify-between
+                           items-center
+                           pt-3
+                           border-t
+                           border-gray-200
+                           dark:border-slate-800">
+
+                    <span
+                        class="font-heading
+                               font-bold
+                               text-lg">
+
+                        TOTAL
+
+                    </span>
+
+
+                    <span
+                        id="receiptTotal"
+                        class="text-2xl
+                               font-heading
+                               font-bold
+                               text-green-600">
+
+                        KSh 0
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Payment -->
+
+            <div
+                class="mt-6
+                       bg-green-50
+                       dark:bg-green-900/20
+                       rounded-2xl
+                       p-4
+                       flex
+                       items-center
+                       justify-between">
+
+                <div
+                    class="flex
+                           items-center
+                           gap-3">
+
+                    <div
+                        class="w-10 h-10
+                               rounded-xl
+                               bg-green-600
+                               text-white
+                               flex
+                               items-center
+                               justify-center">
+
+                        <i
+                            id="paymentIcon"
+                            data-lucide="banknote">
+                        </i>
+
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="text-xs
+                                   text-gray-500">
+
+                            Payment Method
+
+                        </p>
+
+                        <p
+                            id="paymentMethod"
+                            class="font-semibold">
+
+                            Cash
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i
+                    data-lucide="check-circle"
+                    class="text-green-600">
+                </i>
+
+            </div>
+
+
+
+            <!-- Footer -->
+
+            <div
+                class="text-center
+                       mt-8
+                       pt-6
+                       border-t
+                       border-gray-200
+                       dark:border-slate-800">
+
+                <p
+                    class="font-medium">
+
+                    Thank you for shopping with us! ❤️
+
+                </p>
+
+                <p
+                    class="text-xs
+                           text-gray-500
+                           mt-2">
+
+                    Please keep this receipt for your records.
+
+                </p>
+
+                <p
+                    class="text-xs
+                           text-gray-400
+                           mt-4">
+
+                    Powered by SimplePOS
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<script src="app.js"></script>
+
+<script src="receipt.js"></script>
+
+
+<!-- ========================================= -->
+<!-- PRINT STYLES -->
+<!-- ========================================= -->
+
+<style>
+
+@media print {
+
+    body {
+        background: white !important;
+    }
+
+    header,
+    main > div:first-child {
+        display: none !important;
+    }
+
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #receipt {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 80mm !important;
+        margin: 0 auto !important;
+    }
+
+    #receipt button {
+        display: none !important;
+    }
+
+}
+
+</style>
+
+
+</body>
+
+</html>S

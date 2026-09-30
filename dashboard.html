@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimplePOS | Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brandGreen: "#00c853",
+                        brandCyan: "#00b0ff",
+                        emeraldAccent: "#00e676"
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive']
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 antialiased min-h-screen">
+
+<div class="min-h-screen flex">
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+    <aside class="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col justify-between z-20">
+        
+        <div>
+            <!-- Brand Logo Header -->
+            <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <!-- Ribbon S Logo -->
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00e676] to-[#00a843] p-1.5 shadow-md shadow-emerald-950/20 border border-white/20 flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <path d="M 68 32 C 68 32, 42 22, 34 34 C 26 46, 72 48, 64 66 C 56 82, 28 68, 28 68" 
+                                  fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h1 class="font-bold text-xl tracking-tight text-slate-900 dark:text-white leading-none">
+                            SimplePOS
+                        </h1>
+                        <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+                            Mwangaza Mini Mart
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-semibold shadow-xs">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    Dashboard
+                </a>
+
+                <a href="sales.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    Sales Terminal
+                </a>
+
+                <a href="products.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    Products
+                </a>
+
+                <a href="inventory.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="boxes" class="w-5 h-5"></i>
+                    Inventory
+                </a>
+
+                <a href="sales-history.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="receipt" class="w-5 h-5"></i>
+                    Sales History
+                </a>
+
+                <a href="reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    Reports
+                </a>
+
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition font-medium">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer / Logout -->
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+            <a href="index.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition font-medium">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT VIEW -->
+    <!-- ================================================= -->
+    <main class="flex-1 min-w-0 flex flex-col">
+
+        <!-- TOP BAR -->
+        <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-slate-900/90">
+            <div class="flex items-center gap-3">
+                <!-- Dual-Arch M Mini Logo -->
+                <div class="w-9 h-9 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center shadow p-1 border border-slate-300 dark:border-slate-700">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <path d="M 24 70 L 38 32 C 40 27, 46 27, 48 32 L 60 58 C 61 61, 65 61, 66 58 L 76 35" fill="none" stroke="#00c853" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M 50 60 C 51 57, 54 56, 56 60 L 65 32 C 67 27, 73 27, 75 32 L 77 70" fill="none" stroke="#00b0ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">Dashboard Overview</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Live operational telemetry</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Dynamic Time & Date Container -->
+                <div class="hidden md:block text-right">
+                    <p id="currentDate" class="text-xs font-semibold text-slate-500 dark:text-slate-400 upper-case tracking-wider">--</p>
+                    <p id="currentTime" class="text-lg font-extrabold text-slate-900 dark:text-white tracking-wider font-mono">--:--:--</p>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" type="button" aria-label="Toggle theme" 
+                        class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 active:scale-95 transition shadow-xs">
+                    <i id="themeIcon" data-lucide="sun" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTAINER -->
+        <div class="p-6 space-y-6">
+
+            <!-- WELCOME BANNER -->
+            <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#00b0ff]/20 via-[#00c853] to-[#004d40] p-6 md:p-8 text-white shadow-xl">
+                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                        <span id="greetingText" class="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold tracking-wide text-white mb-2">
+                            ☀️ Good Day
+                        </span>
+                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Have a productive day!</h1>
+                        <p class="mt-1 text-emerald-100 text-sm">Here's the store performance summary for Mwangaza Mini Mart.</p>
+                    </div>
+
+                    <a href="sales.html" class="inline-flex items-center justify-center gap-2 bg-white text-slate-950 hover:bg-emerald-50 px-6 py-3.5 rounded-2xl font-bold transition shadow-lg hover:scale-105 active:scale-95">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-600"></i>
+                        Open Terminal
+                    </a>
+                </div>
+            </section>
+
+            <!-- STAT CARDS -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                
+                <!-- TODAY'S SALES -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Today's Sales</p>
+                        <h3 id="todaySales" class="text-2xl font-extrabold mt-1 text-slate-900 dark:text-white">KSh 0</h3>
+                        <p id="salesComparison" class="text-xs text-slate-500 dark:text-slate-400 mt-1">No sales processed today</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                        <i data-lucide="banknote" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <!-- TRANSACTIONS -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Transactions</p>
+                        <h3 id="todayTransactions" class="text-2xl font-extrabold mt-1 text-slate-900 dark:text-white">0</h3>
+                        <p id="transactionMessage" class="text-xs text-slate-500 dark:text-slate-400 mt-1">0 receipts generated</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
+                        <i data-lucide="receipt" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <!-- PRODUCTS IN STOCK -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Units</p>
+                        <h3 id="productsInStock" class="text-2xl font-extrabold mt-1 text-slate-900 dark:text-white">0</h3>
+                        <p id="differentProducts" class="text-xs text-slate-500 dark:text-slate-400 mt-1">0 item categories</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                        <i data-lucide="package" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <!-- LOW STOCK ALERT -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Low Stock</p>
+                        <h3 id="lowStockCount" class="text-2xl font-extrabold mt-1 text-slate-900 dark:text-white">0</h3>
+                        <p id="lowStockMessage" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Stock levels healthy</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- LOWER DATA SECTION -->
+            <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                <!-- RECENT TRANSACTIONS TABLE -->
+                <div class="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900 dark:text-white">Recent Sales</h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Latest completed register transactions</p>
+                            </div>
+                            <a href="sales-history.html" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">View All →</a>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs uppercase bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                                    <tr>
+                                        <th class="px-6 py-3.5">Receipt ID</th>
+                                        <th class="px-6 py-3.5">Time</th>
+                                        <th class="px-6 py-3.5">Payment</th>
+                                        <th class="px-6 py-3.5 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentSalesTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
+                                    <!-- Dynamic rows from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="recentSalesEmpty" class="hidden p-12 text-center">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+                                <i data-lucide="receipt" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-200">No Sales Recorded</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Completed checkout sessions will render here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOW STOCK LIST ALERT -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+                    <div>
+                        <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+                            <h2 class="font-bold text-lg text-slate-900 dark:text-white">Low Stock Warning</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Items reaching critical re-order limits</p>
+                        </div>
+
+                        <div id="lowStockList" class="p-6 space-y-3">
+                            <!-- Dynamic low stock list items -->
+                        </div>
+
+                        <!-- Empty Healthy Stock State -->
+                        <div id="lowStockEmpty" class="hidden p-10 text-center">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3">
+                                <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-200">All Items Well Stocked</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">No products currently require immediate reordering.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-6 pt-0">
+                        <a href="inventory.html" class="block w-full py-3 text-center rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700/60 font-semibold text-xs text-slate-700 dark:text-slate-300 transition">
+                            Open Inventory Management
+                        </a>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Integration -->
+<script src="dashboard.js"></script>
+
+</body>
+</html>

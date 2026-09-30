@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SimplePOS | Settings</title>
+
+    <!-- ========================================================= -->
+    <!-- TAILWIND -->
+    <!-- ========================================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ========================================================= -->
+    <!-- GOOGLE FONTS -->
+    <!-- ========================================================= -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- ========================================================= -->
+    <!-- LUCIDE -->
+    <!-- ========================================================= -->
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- ========================================================= -->
+    <!-- TAILWIND CONFIG -->
+    <!-- ========================================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#16A34A",
+                        secondary: "#22C55E"
+
+                    },
+
+                    fontFamily: {
+
+                        heading: ["Poppins", "sans-serif"],
+                        body: ["Inter", "sans-serif"]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- ========================================================= -->
+    <!-- CUSTOM STYLES -->
+    <!-- ========================================================= -->
+
+    <style>
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        .dark * {
+            scrollbar-color: #475569 transparent;
+        }
+
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: "Poppins", sans-serif;
+        }
+
+
+        .sidebar-link {
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .sidebar-link:hover {
+            transform: translateX(2px);
+        }
+
+
+        .settings-card {
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .settings-card:hover {
+            border-color: rgba(34, 197, 94, 0.25);
+        }
+
+
+        .input-field {
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .input-field:focus {
+            border-color: #22c55e;
+            box-shadow:
+                0 0 0 4px rgba(34, 197, 94, 0.10);
+            outline: none;
+        }
+
+
+        .save-button {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background-color 0.2s ease;
+        }
+
+
+        .save-button:hover {
+            transform: translateY(-1px);
+            box-shadow:
+                0 8px 20px rgba(22, 163, 74, 0.20);
+        }
+
+
+        .danger-button {
+            transition:
+                background-color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .danger-button:hover {
+            transform: translateY(-1px);
+        }
+
+
+        .toggle-switch {
+            transition: background-color 0.2s ease;
+        }
+
+
+        .toggle-dot {
+            transition: transform 0.2s ease;
+        }
+
+
+        .toast {
+            animation:
+                toastIn 0.25s ease forwards;
+        }
+
+
+        @keyframes toastIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @media (max-width: 640px) {
+
+            .settings-card {
+                border-radius: 1rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="
+        bg-slate-100
+        dark:bg-slate-950
+        text-slate-800
+        dark:text-white
+        transition-colors
+        duration-300
+    "
+>
+
+
+<div class="min-h-screen flex">
+
+
+    <!-- ========================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================================= -->
+
+    <aside
+        class="
+            hidden
+            lg:flex
+            w-64
+            bg-white
+            dark:bg-slate-900
+            border-r
+            border-slate-200
+            dark:border-slate-800
+            flex-col
+            shrink-0
+        "
+    >
+
+        <!-- Logo -->
+
+        <div
+            class="
+                px-6
+                py-5
+                border-b
+                border-slate-200
+                dark:border-slate-800
+            "
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="
+                        w-11
+                        h-11
+                        rounded-2xl
+                        bg-gradient-to-br
+                        from-green-500
+                        to-green-700
+                        flex
+                        items-center
+                        justify-center
+                        text-white
+                        shadow-lg
+                        shadow-green-600/20
+                    "
+                >
+
+                    <i
+                        data-lucide="shopping-cart"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <h1
+                        class="
+                            font-heading
+                            font-bold
+                            text-lg
+                            tracking-tight
+                        "
+                    >
+                        SimplePOS
+                    </h1>
+
+                    <p
+                        id="sidebarShopName"
+                        class="
+                            text-xs
+                            text-slate-500
+                            dark:text-slate-400
+                            truncate
+                        "
+                    >
+                        Mwangaza Mini Mart
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav
+            class="
+                flex-1
+                p-4
+                space-y-1.5
+                overflow-y-auto
+            "
+        >
+
+            <p
+                class="
+                    px-3
+                    pt-2
+                    pb-2
+                    text-[10px]
+                    uppercase
+                    tracking-widest
+                    font-semibold
+                    text-slate-400
+                "
+            >
+                Main Menu
+            </p>
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="dashboard.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="layout-dashboard"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- Sales -->
+
+            <a
+                href="sales.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="shopping-bag"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Sales
+                </span>
+
+            </a>
+
+
+            <!-- Products -->
+
+            <a
+                href="products.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="package"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Products
+                </span>
+
+            </a>
+
+
+            <!-- Inventory -->
+
+            <a
+                href="inventory.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="boxes"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Inventory
+                </span>
+
+            </a>
+
+
+            <!-- Sales History -->
+
+            <a
+                href="sales-history.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="receipt"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Sales History
+                </span>
+
+            </a>
+
+
+            <!-- Reports -->
+
+            <a
+                href="reports.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-slate-600
+                    dark:text-slate-300
+                    hover:bg-slate-100
+                    dark:hover:bg-slate-800
+                "
+            >
+
+                <i
+                    data-lucide="bar-chart-3"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Reports
+                </span>
+
+            </a>
+
+
+            <!-- Settings ACTIVE -->
+
+            <a
+                href="settings.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-green-50
+                    dark:bg-green-900/20
+                    text-green-700
+                    dark:text-green-400
+                    font-semibold
+                "
+            >
+
+                <div
+                    class="
+                        w-8
+                        h-8
+                        rounded-lg
+                        bg-green-600
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        shadow-sm
+                    "
+                >
+
+                    <i
+                        data-lucide="settings"
+                        class="w-4 h-4"
+                    ></i>
+
+                </div>
+
+                <span class="text-sm">
+                    Settings
+                </span>
+
+                <span
+                    class="
+                        ml-auto
+                        w-2
+                        h-2
+                        rounded-full
+                        bg-green-500
+                    "
+                ></span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- Logout -->
+
+        <div
+            class="
+                p-4
+                border-t
+                border-slate-200
+                dark:border-slate-800
+            "
+        >
+
+            <a
+                href="index.html"
+                class="
+                    sidebar-link
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    text-red-500
+                    hover:bg-red-50
+                    dark:hover:bg-red-900/20
+                "
+            >
+
+                <i
+                    data-lucide="log-out"
+                    class="w-5 h-5"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ========================================================= -->
+    <!-- MAIN -->
+    <!-- ========================================================= -->
+
+    <main class="flex-1 min-w-0">
+
+
+        <!-- ===================================================== -->
+        <!-- TOP BAR -->
+        <!-- ===================================================== -->
+
+        <header
+            class="
+                sticky
+                top-0
+                z-30
+                bg-white/95
+                dark:bg-slate-900/95
+                backdrop-blur-md
+                border-b
+                border-slate-200
+                dark:border-slate-800
+            "
+        >
+
+            <div
+                class="
+                    px-4
+                    sm:px-6
+                    lg:px-8
+                    py-4
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        items-center
+                        justify-between
+                        gap-4
+                    "
+                >
+
+                    <div>
+
+                        <h2
+                            class="
+                                text-xl
+                                sm:text-2xl
+                                font-heading
+                                font-bold
+                                tracking-tight
+                            "
+                        >
+                            Settings
+                        </h2>
+
+                        <p
+                            class="
+                                hidden
+                                sm:block
+                                text-sm
+                                text-slate-500
+                                dark:text-slate-400
+                                mt-0.5
+                            "
+                        >
+                            Manage your shop and POS preferences.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Theme -->
+
+                    <button
+                        id="themeToggle"
+                        type="button"
+                        aria-label="Toggle theme"
+                        title="Toggle theme"
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-slate-100
+                            dark:bg-slate-800
+                            text-slate-600
+                            dark:text-slate-300
+                            flex
+                            items-center
+                            justify-center
+                            hover:bg-slate-200
+                            dark:hover:bg-slate-700
+                            hover:scale-105
+                            transition
+                        "
+                    >
+
+                        <i
+                            id="themeIcon"
+                            data-lucide="moon"
+                            class="w-5 h-5"
+                        ></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ===================================================== -->
+        <!-- MOBILE NAV -->
+        <!-- ===================================================== -->
+
+        <div
+            class="
+                lg:hidden
+                px-4
+                py-3
+                bg-white
+                dark:bg-slate-900
+                border-b
+                border-slate-200
+                dark:border-slate-800
+                overflow-x-auto
+            "
+        >
+
+            <div class="flex gap-2 min-w-max">
+
+                <a
+                    href="dashboard.html"
+                    class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="sales.html"
+                    class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800"
+                >
+                    Sales
+                </a>
+
+                <a
+                    href="products.html"
+                    class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800"
+                >
+                    Products
+                </a>
+
+                <a
+                    href="inventory.html"
+                    class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800"
+                >
+                    Inventory
+                </a>
+
+                <a
+                    href="sales-history.html"
+                    class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800"
+                >
+                    History
+                </a>
+
+                <a
+                    href="settings.html"
+                    class="px-3 py-2 rounded-lg text-xs font-semibold bg-green-600 text-white"
+                >
+                    Settings
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ===================================================== -->
+        <!-- CONTENT -->
+        <!-- ===================================================== -->
+
+        <div
+            class="
+                p-4
+                sm:p-6
+                lg:p-8
+                max-w-6xl
+                mx-auto
+            "
+        >
+
+
+            <!-- ================================================= -->
+            <!-- PAGE INTRO -->
+            <!-- ================================================= -->
+
+            <div class="mb-6">
+
+                <div
+                    class="
+                        flex
+                        items-center
+                        gap-3
+                        mb-2
+                    "
+                >
+
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-green-50
+                            dark:bg-green-900/20
+                            text-green-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+
+                        <i
+                            data-lucide="sliders-horizontal"
+                            class="w-5 h-5"
+                        ></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3
+                            class="
+                                font-heading
+                                font-semibold
+                                text-lg
+                            "
+                        >
+                            POS Configuration
+                        </h3>
+
+                        <p
+                            class="
+                                text-xs
+                                sm:text-sm
+                                text-slate-500
+                                dark:text-slate-400
+                            "
+                        >
+                            Configure how SimplePOS works for your shop.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- SHOP PROFILE -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                "
+            >
+
+                <div
+                    class="
+                        px-5
+                        sm:px-6
+                        py-5
+                        border-b
+                        border-slate-200
+                        dark:border-slate-800
+                    "
+                >
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-green-50
+                                dark:bg-green-900/20
+                                text-green-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i
+                                data-lucide="store"
+                                class="w-5 h-5"
+                            ></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                "
+                            >
+                                Shop Profile
+                            </h3>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    dark:text-slate-400
+                                "
+                            >
+                                Information displayed throughout the POS.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5 sm:p-6">
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-1
+                            md:grid-cols-2
+                            gap-5
+                        "
+                    >
+
+                        <!-- Shop name -->
+
+                        <div>
+
+                            <label
+                                for="shopName"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Shop Name
+                            </label>
+
+                            <input
+                                id="shopName"
+                                type="text"
+                                placeholder="Mwangaza Mini Mart"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div>
+
+                            <label
+                                for="shopPhone"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Phone Number
+                            </label>
+
+                            <input
+                                id="shopPhone"
+                                type="tel"
+                                placeholder="07XX XXX XXX"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div>
+
+                            <label
+                                for="shopEmail"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Email Address
+                            </label>
+
+                            <input
+                                id="shopEmail"
+                                type="email"
+                                placeholder="shop@example.com"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Location -->
+
+                        <div>
+
+                            <label
+                                for="shopLocation"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Location
+                            </label>
+
+                            <input
+                                id="shopLocation"
+                                type="text"
+                                placeholder="Nairobi, Kenya"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            mt-5
+                            flex
+                            justify-end
+                        "
+                    >
+
+                        <button
+                            id="saveShopProfile"
+                            type="button"
+                            class="
+                                save-button
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-5
+                                py-2.5
+                                rounded-xl
+                                bg-green-600
+                                hover:bg-green-700
+                                text-white
+                                text-sm
+                                font-semibold
+                            "
+                        >
+
+                            <i
+                                data-lucide="save"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Save Profile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- APPEARANCE -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                "
+            >
+
+                <div
+                    class="
+                        px-5
+                        sm:px-6
+                        py-5
+                        border-b
+                        border-slate-200
+                        dark:border-slate-800
+                    "
+                >
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-purple-50
+                                dark:bg-purple-900/20
+                                text-purple-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i
+                                data-lucide="palette"
+                                class="w-5 h-5"
+                            ></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                "
+                            >
+                                Appearance
+                            </h3>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    dark:text-slate-400
+                                "
+                            >
+                                Customize how SimplePOS looks.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5 sm:p-6 space-y-4">
+
+                    <!-- Dark mode -->
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                            p-4
+                            rounded-xl
+                            bg-slate-50
+                            dark:bg-slate-950
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    w-9
+                                    h-9
+                                    rounded-lg
+                                    bg-white
+                                    dark:bg-slate-800
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                            >
+
+                                <i
+                                    id="appearanceIcon"
+                                    data-lucide="moon"
+                                    class="w-4 h-4"
+                                ></i>
+
+                            </div>
+
+                            <div>
+
+                                <p
+                                    class="
+                                        text-sm
+                                        font-semibold
+                                    "
+                                >
+                                    Dark Mode
+                                </p>
+
+                                <p
+                                    id="appearanceDescription"
+                                    class="
+                                        text-xs
+                                        text-slate-500
+                                        dark:text-slate-400
+                                    "
+                                >
+                                    Use the dark appearance.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            id="appearanceToggle"
+                            type="button"
+                            role="switch"
+                            aria-checked="false"
+                            class="
+                                toggle-switch
+                                relative
+                                w-12
+                                h-7
+                                rounded-full
+                                bg-slate-300
+                                dark:bg-slate-700
+                                shrink-0
+                            "
+                        >
+
+                            <span
+                                id="appearanceToggleDot"
+                                class="
+                                    toggle-dot
+                                    absolute
+                                    top-1
+                                    left-1
+                                    w-5
+                                    h-5
+                                    rounded-full
+                                    bg-white
+                                    shadow
+                                "
+                            ></span>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- System theme -->
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                            p-4
+                            rounded-xl
+                            bg-slate-50
+                            dark:bg-slate-950
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    w-9
+                                    h-9
+                                    rounded-lg
+                                    bg-white
+                                    dark:bg-slate-800
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                            >
+
+                                <i
+                                    data-lucide="monitor"
+                                    class="w-4 h-4"
+                                ></i>
+
+                            </div>
+
+                            <div>
+
+                                <p
+                                    class="
+                                        text-sm
+                                        font-semibold
+                                    "
+                                >
+                                    Use System Theme
+                                </p>
+
+                                <p
+                                    class="
+                                        text-xs
+                                        text-slate-500
+                                        dark:text-slate-400
+                                    "
+                                >
+                                    Follow your device's appearance.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            id="systemThemeToggle"
+                            type="button"
+                            role="switch"
+                            aria-checked="false"
+                            class="
+                                toggle-switch
+                                relative
+                                w-12
+                                h-7
+                                rounded-full
+                                bg-slate-300
+                                dark:bg-slate-700
+                                shrink-0
+                            "
+                        >
+
+                            <span
+                                id="systemThemeToggleDot"
+                                class="
+                                    toggle-dot
+                                    absolute
+                                    top-1
+                                    left-1
+                                    w-5
+                                    h-5
+                                    rounded-full
+                                    bg-white
+                                    shadow
+                                "
+                            ></span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- POS PREFERENCES -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                "
+            >
+
+                <div
+                    class="
+                        px-5
+                        sm:px-6
+                        py-5
+                        border-b
+                        border-slate-200
+                        dark:border-slate-800
+                    "
+                >
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-blue-50
+                                dark:bg-blue-900/20
+                                text-blue-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i
+                                data-lucide="sliders"
+                                class="w-5 h-5"
+                            ></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                "
+                            >
+                                POS Preferences
+                            </h3>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    dark:text-slate-400
+                                "
+                            >
+                                Configure basic sales behavior.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5 sm:p-6">
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-1
+                            md:grid-cols-2
+                            gap-5
+                        "
+                    >
+
+                        <!-- Currency -->
+
+                        <div>
+
+                            <label
+                                for="currency"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Currency
+                            </label>
+
+                            <select
+                                id="currency"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                                <option value="KSh">
+                                    KSh — Kenyan Shilling
+                                </option>
+
+                                <option value="USD">
+                                    USD — US Dollar
+                                </option>
+
+                                <option value="EUR">
+                                    EUR — Euro
+                                </option>
+
+                                <option value="GBP">
+                                    GBP — British Pound
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Default payment -->
+
+                        <div>
+
+                            <label
+                                for="defaultPayment"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Default Payment Method
+                            </label>
+
+                            <select
+                                id="defaultPayment"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                                <option value="Cash">
+                                    Cash
+                                </option>
+
+                                <option value="M-Pesa">
+                                    M-Pesa
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Low stock -->
+
+                        <div>
+
+                            <label
+                                for="lowStockThreshold"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Low Stock Warning
+                            </label>
+
+                            <input
+                                id="lowStockThreshold"
+                                type="number"
+                                min="0"
+                                step="1"
+                                placeholder="5"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                            <p
+                                class="
+                                    text-[11px]
+                                    text-slate-400
+                                    mt-1.5
+                                "
+                            >
+                                Products at or below this number are considered low stock.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Receipt footer -->
+
+                        <div>
+
+                            <label
+                                for="receiptFooter"
+                                class="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    mb-2
+                                "
+                            >
+                                Receipt Footer
+                            </label>
+
+                            <input
+                                id="receiptFooter"
+                                type="text"
+                                maxlength="100"
+                                placeholder="Thank you for shopping with us!"
+                                class="
+                                    input-field
+                                    w-full
+                                    h-11
+                                    px-4
+                                    rounded-xl
+                                    bg-slate-50
+                                    dark:bg-slate-950
+                                    border
+                                    border-slate-200
+                                    dark:border-slate-700
+                                    text-sm
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-5 flex justify-end">
+
+                        <button
+                            id="savePOSPreferences"
+                            type="button"
+                            class="
+                                save-button
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-5
+                                py-2.5
+                                rounded-xl
+                                bg-green-600
+                                hover:bg-green-700
+                                text-white
+                                text-sm
+                                font-semibold
+                            "
+                        >
+
+                            <i
+                                data-lucide="save"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Save Preferences
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- RECEIPT INFORMATION -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                "
+            >
+
+                <div
+                    class="
+                        px-5
+                        sm:px-6
+                        py-5
+                        border-b
+                        border-slate-200
+                        dark:border-slate-800
+                    "
+                >
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-orange-50
+                                dark:bg-orange-900/20
+                                text-orange-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i
+                                data-lucide="receipt"
+                                class="w-5 h-5"
+                            ></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                "
+                            >
+                                Receipt Information
+                            </h3>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    dark:text-slate-400
+                                "
+                            >
+                                Information that can appear on customer receipts.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5 sm:p-6">
+
+                    <div class="space-y-4">
+
+                        <!-- Show phone -->
+
+                        <label
+                            class="
+                                flex
+                                items-center
+                                justify-between
+                                gap-4
+                                p-4
+                                rounded-xl
+                                bg-slate-50
+                                dark:bg-slate-950
+                                cursor-pointer
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                            >
+
+                                <i
+                                    data-lucide="phone"
+                                    class="
+                                        w-5
+                                        h-5
+                                        text-slate-400
+                                    "
+                                ></i>
+
+                                <div>
+
+                                    <p
+                                        class="
+                                            text-sm
+                                            font-semibold
+                                        "
+                                    >
+                                        Show Phone Number
+                                    </p>
+
+                                    <p
+                                        class="
+                                            text-xs
+                                            text-slate-500
+                                            dark:text-slate-400
+                                        "
+                                    >
+                                        Display the shop phone on receipts.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <input
+                                id="showPhoneOnReceipt"
+                                type="checkbox"
+                                class="
+                                    w-5
+                                    h-5
+                                    accent-green-600
+                                "
+                            >
+
+                        </label>
+
+
+                        <!-- Show location -->
+
+                        <label
+                            class="
+                                flex
+                                items-center
+                                justify-between
+                                gap-4
+                                p-4
+                                rounded-xl
+                                bg-slate-50
+                                dark:bg-slate-950
+                                cursor-pointer
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                            >
+
+                                <i
+                                    data-lucide="map-pin"
+                                    class="
+                                        w-5
+                                        h-5
+                                        text-slate-400
+                                    "
+                                ></i>
+
+                                <div>
+
+                                    <p
+                                        class="
+                                            text-sm
+                                            font-semibold
+                                        "
+                                    >
+                                        Show Location
+                                    </p>
+
+                                    <p
+                                        class="
+                                            text-xs
+                                            text-slate-500
+                                            dark:text-slate-400
+                                        "
+                                    >
+                                        Display the shop location on receipts.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <input
+                                id="showLocationOnReceipt"
+                                type="checkbox"
+                                class="
+                                    w-5
+                                    h-5
+                                    accent-green-600
+                                "
+                            >
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="mt-5 flex justify-end">
+
+                        <button
+                            id="saveReceiptSettings"
+                            type="button"
+                            class="
+                                save-button
+                                inline-flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-5
+                                py-2.5
+                                rounded-xl
+                                bg-green-600
+                                hover:bg-green-700
+                                text-white
+                                text-sm
+                                font-semibold
+                            "
+                        >
+
+                            <i
+                                data-lucide="save"
+                                class="w-4 h-4"
+                            ></i>
+
+                            Save Receipt Settings
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- DATA MANAGEMENT -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    mb-6
+                    overflow-hidden
+                "
+            >
+
+                <div
+                    class="
+                        px-5
+                        sm:px-6
+                        py-5
+                        border-b
+                        border-slate-200
+                        dark:border-slate-800
+                    "
+                >
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-cyan-50
+                                dark:bg-cyan-900/20
+                                text-cyan-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i
+                                data-lucide="database"
+                                class="w-5 h-5"
+                            ></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-heading
+                                    font-semibold
+                                "
+                            >
+                                Data Management
+                            </h3>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    dark:text-slate-400
+                                "
+                            >
+                                Backup and manage your local POS data.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5 sm:p-6">
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-1
+                            sm:grid-cols-2
+                            gap-3
+                        "
+                    >
+
+                        <!-- Export -->
+
+                        <button
+                            id="exportData"
+                            type="button"
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                                p-4
+                                rounded-xl
+                                border
+                                border-slate-200
+                                dark:border-slate-700
+                                hover:bg-slate-50
+                                dark:hover:bg-slate-800
+                                text-left
+                                transition
+                            "
+                        >
+
+                            <span
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-xl
+                                    bg-green-50
+                                    dark:bg-green-900/20
+                                    text-green-600
+                                    flex
+                                    items-center
+                                    justify-center
+                                    shrink-0
+                                "
+                            >
+
+                                <i
+                                    data-lucide="download"
+                                    class="w-5 h-5"
+                                ></i>
+
+                            </span>
+
+
+                            <span>
+
+                                <span
+                                    class="
+                                        block
+                                        text-sm
+                                        font-semibold
+                                    "
+                                >
+                                    Export Data
+                                </span>
+
+                                <span
+                                    class="
+                                        block
+                                        text-xs
+                                        text-slate-500
+                                        dark:text-slate-400
+                                        mt-0.5
+                                    "
+                                >
+                                    Download a backup of your POS data.
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <!-- Import -->
+
+                        <button
+                            id="importData"
+                            type="button"
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                                p-4
+                                rounded-xl
+                                border
+                                border-slate-200
+                                dark:border-slate-700
+                                hover:bg-slate-50
+                                dark:hover:bg-slate-800
+                                text-left
+                                transition
+                            "
+                        >
+
+                            <span
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-xl
+                                    bg-blue-50
+                                    dark:bg-blue-900/20
+                                    text-blue-600
+                                    flex
+                                    items-center
+                                    justify-center
+                                    shrink-0
+                                "
+                            >
+
+                                <i
+                                    data-lucide="upload"
+                                    class="w-5 h-5"
+                                ></i>
+
+                            </span>
+
+
+                            <span>
+
+                                <span
+                                    class="
+                                        block
+                                        text-sm
+                                        font-semibold
+                                    "
+                                >
+                                    Import Data
+                                </span>
+
+                                <span
+                                    class="
+                                        block
+                                        text-xs
+                                        text-slate-500
+                                        dark:text-slate-400
+                                        mt-0.5
+                                    "
+                                >
+                                    Restore data from a backup file.
+                                </span>
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+
+                    <input
+                        id="importFile"
+                        type="file"
+                        accept=".json,application/json"
+                        class="hidden"
+                    >
+
+
+                    <!-- Danger zone -->
+
+                    <div
+                        class="
+                            mt-6
+                            pt-5
+                            border-t
+                            border-slate-200
+                            dark:border-slate-800
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                flex-col
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                                gap-4
+                                p-4
+                                rounded-xl
+                                bg-red-50
+                                dark:bg-red-900/10
+                                border
+                                border-red-100
+                                dark:border-red-900/30
+                            "
+                        >
+
+                            <div>
+
+                                <p
+                                    class="
+                                        text-sm
+                                        font-semibold
+                                        text-red-600
+                                    "
+                                >
+                                    Danger Zone
+                                </p>
+
+                                <p
+                                    class="
+                                        text-xs
+                                        text-red-500/80
+                                        mt-1
+                                        max-w-xl
+                                    "
+                                >
+                                    Clearing application data will permanently
+                                    remove products, sales history and saved settings
+                                    from this browser.
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                id="clearAllData"
+                                type="button"
+                                class="
+                                    danger-button
+                                    shrink-0
+                                    inline-flex
+                                    items-center
+                                    justify-center
+                                    gap-2
+                                    px-4
+                                    py-2.5
+                                    rounded-xl
+                                    bg-red-600
+                                    hover:bg-red-700
+                                    text-white
+                                    text-sm
+                                    font-semibold
+                                "
+                            >
+
+                                <i
+                                    data-lucide="trash-2"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Clear All Data
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- ABOUT -->
+            <!-- ================================================= -->
+
+            <section
+                class="
+                    settings-card
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    rounded-2xl
+                    shadow-sm
+                    overflow-hidden
+                "
+            >
+
+                <div class="p-5 sm:p-6">
+
+                    <div
+                        class="
+                            flex
+                            flex-col
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                            gap-5
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-4
+                            "
+                        >
+
+                            <div
+                                class="
+                                    w-12
+                                    h-12
+                                    rounded-2xl
+                                    bg-gradient-to-br
+                                    from-green-500
+                                    to-green-700
+                                    text-white
+                                    flex
+                                    items-center
+                                    justify-center
+                                    shadow-lg
+                                    shadow-green-600/20
+                                "
+                            >
+
+                                <i
+                                    data-lucide="shopping-cart"
+                                    class="w-6 h-6"
+                                ></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <h3
+                                    class="
+                                        font-heading
+                                        font-semibold
+                                    "
+                                >
+                                    SimplePOS
+                                </h3>
+
+                                <p
+                                    class="
+                                        text-xs
+                                        text-slate-500
+                                        dark:text-slate-400
+                                    "
+                                >
+                                    Point of Sale System
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                flex-wrap
+                                gap-2
+                            "
+                        >
+
+                            <span
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-1.5
+                                    px-3
+                                    py-1.5
+                                    rounded-lg
+                                    bg-green-50
+                                    dark:bg-green-900/20
+                                    text-green-600
+                                    text-xs
+                                    font-medium
+                                "
+                            >
+
+                                <span
+                                    class="
+                                        w-1.5
+                                        h-1.5
+                                        rounded-full
+                                        bg-green-500
+                                    "
+                                ></span>
+
+                                Local Storage
+
+                            </span>
+
+
+                            <span
+                                id="appVersion"
+                                class="
+                                    px-3
+                                    py-1.5
+                                    rounded-lg
+                                    bg-slate-100
+                                    dark:bg-slate-800
+                                    text-slate-500
+                                    dark:text-slate-400
+                                    text-xs
+                                    font-medium
+                                "
+                            >
+                                Version 1.0.0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="
+                            mt-5
+                            pt-5
+                            border-t
+                            border-slate-200
+                            dark:border-slate-800
+                            flex
+                            flex-col
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                            gap-2
+                        "
+                    >
+
+                        <p
+                            class="
+                                text-xs
+                                text-slate-400
+                            "
+                        >
+                            SimplePOS — Simple. Reliable. Efficient.
+                        </p>
+
+                        <p
+                            class="
+                                text-xs
+                                text-slate-400
+                            "
+                        >
+                            © 2026 SimplePOS
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- TOAST -->
+<!-- ========================================================= -->
+
+<div
+    id="toast"
+    class="
+        fixed
+        bottom-5
+        right-5
+        z-50
+        hidden
+        max-w-sm
+        px-4
+        py-3
+        rounded-xl
+        bg-slate-900
+        dark:bg-white
+        text-white
+        dark:text-slate-900
+        shadow-xl
+    "
+>
+
+    <div class="flex items-center gap-3">
+
+        <span
+            id="toastIcon"
+            class="
+                w-8
+                h-8
+                rounded-lg
+                bg-green-500/20
+                text-green-400
+                flex
+                items-center
+                justify-center
+                shrink-0
+            "
+        >
+
+            <i
+                data-lucide="check"
+                class="w-4 h-4"
+            ></i>
+
+        </span>
+
+
+        <p
+            id="toastMessage"
+            class="text-sm font-medium"
+        ></p>
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- SETTINGS JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script src="settings.js"></script>
+
+
+</body>
+
+</html>
