@@ -3,6 +3,16 @@
 // Inventory Controller
 // ==========================================================
 
+const API_BASE_URL = "http://127.0.0.1:5000/api";
+
+let products = [];
+let selectedProductId = null;
+
+
+// ==========================================================
+// INITIALIZE
+// ==========================================================
+
 document.addEventListener("DOMContentLoaded", () => {
 
     initializeInventory();
@@ -11,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ==========================================================
-// INITIALIZE
+// INITIALIZE INVENTORY
 // ==========================================================
 
 function initializeInventory() {
@@ -20,156 +30,149 @@ function initializeInventory() {
 
     initializeClock();
 
-    initializeInventoryData();
-
     initializeSearch();
 
     initializeFilter();
 
     initializeStockModal();
 
-    renderInventory();
-
-    initializeIcons();
+    loadProducts();
 
 }
 
 
 // ==========================================================
-// PRODUCT STORAGE
+// LOAD PRODUCTS FROM BACKEND
 // ==========================================================
 
-function getProducts() {
+async function loadProducts() {
 
-    const storedProducts =
-        localStorage.getItem("products");
+    const table =
+        document.getElementById("inventoryTable");
 
-    if (!storedProducts) {
-
-        return [];
-
-    }
+    const emptyState =
+        document.getElementById("emptyInventory");
 
     try {
 
-        return JSON.parse(storedProducts);
+        if (table) {
 
-    } catch (error) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center gap-3">
+
+                            <div class="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Loading inventory...
+                            </p>
+
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+        }
+
+        const response =
+            await fetch(`${API_BASE_URL}/products`);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Server returned ${response.status}`
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        /*
+         * The current Flask endpoint returns
+         * an array directly.
+         */
+
+        if (Array.isArray(data)) {
+
+            products = data;
+
+        }
+
+        else if (Array.isArray(data.products)) {
+
+            products = data.products;
+
+        }
+
+        else {
+
+            products = [];
+
+        }
+
+        renderInventory();
+
+    }
+
+    catch (error) {
 
         console.error(
-            "Unable to read products:",
+            "INVENTORY LOAD ERROR:",
             error
         );
 
-        return [];
+        products = [];
 
-    }
+        if (table) {
 
-}
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
 
+                        <div class="flex flex-col items-center">
 
-// ==========================================================
-// SAVE PRODUCTS
-// ==========================================================
+                            <div class="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/30 text-red-500 flex items-center justify-center">
 
-function saveProducts(products) {
+                                <i data-lucide="wifi-off" class="w-7 h-7"></i>
 
-    localStorage.setItem(
-        "products",
-        JSON.stringify(products)
-    );
+                            </div>
 
-}
+                            <h3 class="font-semibold text-lg mt-4">
+                                Unable to load inventory
+                            </h3>
 
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                Make sure the Mwangaza backend is running.
+                            </p>
 
-// ==========================================================
-// INITIAL PRODUCT DATA
-// ==========================================================
+                            <button
+                                type="button"
+                                onclick="loadProducts()"
+                                class="mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium">
 
-function initializeInventoryData() {
+                                Try Again
 
-    const products =
-        getProducts();
+                            </button>
 
+                        </div>
 
-    /*
-     * If products already exist,
-     * do not overwrite them.
-     */
+                    </td>
+                </tr>
+            `;
 
-    if (products.length > 0) {
-
-        return;
-
-    }
-
-
-    /*
-     * These are only starter products.
-     * They can later be removed once
-     * your Products page creates them.
-     */
-
-    const defaultProducts = [
-
-        {
-            id: Date.now() + 1,
-            name: "Sugar 1kg",
-            category: "food",
-            price: 150,
-            stock: 20,
-            lowStockThreshold: 5
-        },
-
-        {
-            id: Date.now() + 2,
-            name: "Milk 500ml",
-            category: "dairy",
-            price: 65,
-            stock: 15,
-            lowStockThreshold: 5
-        },
-
-        {
-            id: Date.now() + 3,
-            name: "Salt 500g",
-            category: "food",
-            price: 50,
-            stock: 10,
-            lowStockThreshold: 5
-        },
-
-        {
-            id: Date.now() + 4,
-            name: "Bread",
-            category: "food",
-            price: 70,
-            stock: 12,
-            lowStockThreshold: 5
-        },
-
-        {
-            id: Date.now() + 5,
-            name: "Cooking Oil 1L",
-            category: "food",
-            price: 280,
-            stock: 8,
-            lowStockThreshold: 3
-        },
-
-        {
-            id: Date.now() + 6,
-            name: "Bathing Soap",
-            category: "household",
-            price: 120,
-            stock: 9,
-            lowStockThreshold: 3
         }
 
-    ];
+        if (emptyState) {
 
+            emptyState.classList.add("hidden");
 
-    saveProducts(defaultProducts);
+        }
+
+        initializeIcons();
+
+    }
 
 }
 
@@ -191,11 +194,6 @@ function renderInventory() {
         return;
 
     }
-
-
-    const products =
-        getProducts();
-
 
     const searchInput =
         document.getElementById("inventorySearch");
@@ -219,10 +217,23 @@ function renderInventory() {
     const filteredProducts =
         products.filter(product => {
 
+            const name =
+                String(product.NAME ?? product.name ?? "")
+                    .toLowerCase();
+
+            const category =
+                String(product.CATEGORY ?? product.category ?? "")
+                    .toLowerCase();
+
+            const id =
+                String(product.ID ?? product.id ?? "")
+                    .toLowerCase();
+
+
             const matchesSearch =
-                product.name
-                    .toLowerCase()
-                    .includes(searchTerm);
+                name.includes(searchTerm) ||
+                category.includes(searchTerm) ||
+                id.includes(searchTerm);
 
 
             const status =
@@ -246,7 +257,9 @@ function renderInventory() {
 
         emptyState.classList.remove("hidden");
 
-    } else {
+    }
+
+    else {
 
         emptyState.classList.add("hidden");
 
@@ -254,6 +267,41 @@ function renderInventory() {
 
 
     filteredProducts.forEach(product => {
+
+        const productId =
+            product.ID ?? product.id;
+
+        const name =
+            product.NAME ?? product.name;
+
+        const category =
+            product.CATEGORY ?? product.category;
+
+        const price =
+            Number(product.PRICE ?? product.price ?? 0);
+
+        const stock =
+            Number(product.STOCK ?? product.stock ?? 0);
+
+        const threshold =
+            Number(
+                product.LOW_STOCK_THRESHOLD ??
+                product.lowStockThreshold ??
+                5
+            );
+
+
+        const normalizedProduct = {
+
+            ID: productId,
+            NAME: name,
+            CATEGORY: category,
+            PRICE: price,
+            STOCK: stock,
+            LOW_STOCK_THRESHOLD: threshold
+
+        };
+
 
         const row =
             document.createElement("tr");
@@ -264,7 +312,7 @@ function renderInventory() {
 
 
         const status =
-            getStockStatus(product);
+            getStockStatus(normalizedProduct);
 
 
         const statusHTML =
@@ -278,11 +326,11 @@ function renderInventory() {
                 <div>
 
                     <p class="font-semibold">
-                        ${escapeHTML(product.name)}
+                        ${escapeHTML(name)}
                     </p>
 
                     <p class="text-xs text-gray-500">
-                        ID: ${product.id}
+                        ID: ${escapeHTML(productId)}
                     </p>
 
                 </div>
@@ -293,7 +341,7 @@ function renderInventory() {
             <td class="px-6 py-4">
 
                 <span class="capitalize">
-                    ${escapeHTML(product.category)}
+                    ${escapeHTML(category)}
                 </span>
 
             </td>
@@ -301,7 +349,7 @@ function renderInventory() {
 
             <td class="px-6 py-4 font-medium">
 
-                KSh ${Number(product.price).toLocaleString()}
+                KSh ${price.toLocaleString("en-KE")}
 
             </td>
 
@@ -311,7 +359,7 @@ function renderInventory() {
                 <div class="flex items-center gap-3">
 
                     <span class="font-bold">
-                        ${product.stock}
+                        ${stock}
                     </span>
 
                     <span class="text-xs text-gray-500">
@@ -337,10 +385,13 @@ function renderInventory() {
                     <button
                         type="button"
                         class="adjust-stock p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/40 transition"
-                        data-id="${product.id}"
+                        data-id="${productId}"
                         title="Adjust stock">
 
-                        <i data-lucide="plus-minus" class="w-4 h-4"></i>
+                        <i
+                            data-lucide="plus-minus"
+                            class="w-4 h-4">
+                        </i>
 
                     </button>
 
@@ -372,11 +423,19 @@ function renderInventory() {
 function getStockStatus(product) {
 
     const stock =
-        Number(product.stock);
+        Number(
+            product.STOCK ??
+            product.stock ??
+            0
+        );
 
 
     const threshold =
-        Number(product.lowStockThreshold ?? 5);
+        Number(
+            product.LOW_STOCK_THRESHOLD ??
+            product.lowStockThreshold ??
+            5
+        );
 
 
     if (stock <= 0) {
@@ -453,18 +512,22 @@ function getStatusHTML(status) {
 
 function updateStatistics() {
 
-    const products =
-        getProducts();
-
-
     const totalProducts =
         products.length;
 
 
     const totalUnits =
         products.reduce(
-            (total, product) =>
-                total + Number(product.stock || 0),
+            (total, product) => {
+
+                return total +
+                    Number(
+                        product.STOCK ??
+                        product.stock ??
+                        0
+                    );
+
+            },
             0
         );
 
@@ -483,28 +546,49 @@ function updateStatistics() {
         ).length;
 
 
-    document.getElementById(
-        "totalProducts"
-    ).textContent =
-        totalProducts;
+    const totalProductsElement =
+        document.getElementById("totalProducts");
+
+    const totalUnitsElement =
+        document.getElementById("totalUnits");
+
+    const lowStockElement =
+        document.getElementById("lowStockProducts");
+
+    const outOfStockElement =
+        document.getElementById("outOfStockProducts");
 
 
-    document.getElementById(
-        "totalUnits"
-    ).textContent =
-        totalUnits;
+    if (totalProductsElement) {
+
+        totalProductsElement.textContent =
+            totalProducts;
+
+    }
 
 
-    document.getElementById(
-        "lowStockProducts"
-    ).textContent =
-        lowStock;
+    if (totalUnitsElement) {
+
+        totalUnitsElement.textContent =
+            totalUnits;
+
+    }
 
 
-    document.getElementById(
-        "outOfStockProducts"
-    ).textContent =
-        outOfStock;
+    if (lowStockElement) {
+
+        lowStockElement.textContent =
+            lowStock;
+
+    }
+
+
+    if (outOfStockElement) {
+
+        outOfStockElement.textContent =
+            outOfStock;
+
+    }
 
 }
 
@@ -563,9 +647,6 @@ function initializeFilter() {
 // STOCK MODAL
 // ==========================================================
 
-let selectedProductId = null;
-
-
 function initializeStockModal() {
 
     const modal =
@@ -594,28 +675,44 @@ function initializeStockModal() {
     }
 
 
-    closeButton.addEventListener(
-        "click",
-        closeStockModal
-    );
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeStockModal
+        );
+
+    }
 
 
-    cancelButton.addEventListener(
-        "click",
-        closeStockModal
-    );
+    if (cancelButton) {
+
+        cancelButton.addEventListener(
+            "click",
+            closeStockModal
+        );
+
+    }
 
 
-    action.addEventListener(
-        "change",
-        updateNewStockPreview
-    );
+    if (action) {
+
+        action.addEventListener(
+            "change",
+            updateNewStockPreview
+        );
+
+    }
 
 
-    quantity.addEventListener(
-        "input",
-        updateNewStockPreview
-    );
+    if (quantity) {
+
+        quantity.addEventListener(
+            "input",
+            updateNewStockPreview
+        );
+
+    }
 
 
     form.addEventListener(
@@ -646,14 +743,11 @@ function initializeStockModal() {
 
 function openStockModal(productId) {
 
-    const products =
-        getProducts();
-
-
     const product =
         products.find(
             item =>
-                String(item.id) === String(productId)
+                String(item.ID ?? item.id) ===
+                String(productId)
         );
 
 
@@ -667,19 +761,31 @@ function openStockModal(productId) {
 
 
     selectedProductId =
-        product.id;
+        product.ID ?? product.id;
+
+
+    const productName =
+        product.NAME ?? product.name;
+
+
+    const currentStock =
+        Number(
+            product.STOCK ??
+            product.stock ??
+            0
+        );
 
 
     document.getElementById(
         "stockProductName"
     ).textContent =
-        product.name;
+        productName;
 
 
     document.getElementById(
         "currentStockDisplay"
     ).textContent =
-        product.stock;
+        currentStock;
 
 
     document.getElementById(
@@ -695,7 +801,7 @@ function openStockModal(productId) {
     document.getElementById(
         "newStockDisplay"
     ).textContent =
-        product.stock;
+        currentStock;
 
 
     document.getElementById(
@@ -740,14 +846,11 @@ function updateNewStockPreview() {
     }
 
 
-    const products =
-        getProducts();
-
-
     const product =
         products.find(
             item =>
-                String(item.id) === String(selectedProductId)
+                String(item.ID ?? item.id) ===
+                String(selectedProductId)
         );
 
 
@@ -756,6 +859,14 @@ function updateNewStockPreview() {
         return;
 
     }
+
+
+    const currentStock =
+        Number(
+            product.STOCK ??
+            product.stock ??
+            0
+        );
 
 
     const action =
@@ -773,26 +884,26 @@ function updateNewStockPreview() {
 
 
     let newStock =
-        Number(product.stock);
+        currentStock;
 
 
     if (action === "add") {
 
         newStock =
-            Number(product.stock) + quantity;
+            currentStock + quantity;
 
     }
 
 
-    if (action === "remove") {
+    else if (action === "remove") {
 
         newStock =
-            Number(product.stock) - quantity;
+            currentStock - quantity;
 
     }
 
 
-    if (action === "set") {
+    else if (action === "set") {
 
         newStock =
             quantity;
@@ -819,32 +930,12 @@ function updateNewStockPreview() {
 // SAVE STOCK ADJUSTMENT
 // ==========================================================
 
-function handleStockAdjustment(event) {
+async function handleStockAdjustment(event) {
 
     event.preventDefault();
 
 
     if (selectedProductId === null) {
-
-        return;
-
-    }
-
-
-    const products =
-        getProducts();
-
-
-    const product =
-        products.find(
-            item =>
-                String(item.id) === String(selectedProductId)
-        );
-
-
-    if (!product) {
-
-        alert("Product not found.");
 
         return;
 
@@ -865,140 +956,162 @@ function handleStockAdjustment(event) {
         );
 
 
-    if (Number.isNaN(quantity) || quantity < 0) {
+    if (
+        !Number.isInteger(quantity) ||
+        quantity < 0
+    ) {
 
-        alert("Please enter a valid quantity.");
+        alert(
+            "Please enter a valid whole number."
+        );
 
         return;
 
     }
 
 
-    const oldStock =
-        Number(product.stock);
-
-
-    let newStock;
-
-
-    if (action === "add") {
-
-        newStock =
-            oldStock + quantity;
-
-    }
-
-
-    else if (action === "remove") {
-
-        if (quantity > oldStock) {
-
-            alert(
-                "You cannot remove more stock than is available."
-            );
-
-            return;
-
-        }
-
-        newStock =
-            oldStock - quantity;
-
-    }
-
-
-    else {
-
-        newStock =
-            quantity;
-
-    }
-
-
-    product.stock =
-        newStock;
-
-
-    product.updatedAt =
-        new Date().toISOString();
-
-
-    saveProducts(products);
-
-
-    saveInventoryMovement({
-
-        productId: product.id,
-
-        productName: product.name,
-
-        action: action,
-
-        quantity: quantity,
-
-        oldStock: oldStock,
-
-        newStock: newStock,
-
-        date: new Date().toISOString()
-
-    });
-
-
-    closeStockModal();
-
-    renderInventory();
-
-
-}
-
-
-// ==========================================================
-// INVENTORY MOVEMENT HISTORY
-// ==========================================================
-
-function saveInventoryMovement(movement) {
-
-    const stored =
-        localStorage.getItem(
-            "inventoryMovements"
+    const product =
+        products.find(
+            item =>
+                String(item.ID ?? item.id) ===
+                String(selectedProductId)
         );
 
 
-    let movements = [];
+    if (!product) {
 
+        alert("Product not found.");
 
-    if (stored) {
-
-        try {
-
-            movements =
-                JSON.parse(stored);
-
-        } catch {
-
-            movements = [];
-
-        }
+        return;
 
     }
 
 
-    movements.unshift(movement);
+    const currentStock =
+        Number(
+            product.STOCK ??
+            product.stock ??
+            0
+        );
 
 
-    /*
-     * Keep the latest 100 movements.
-     */
+    if (
+        action === "remove" &&
+        quantity > currentStock
+    ) {
 
-    movements =
-        movements.slice(0, 100);
+        alert(
+            "You cannot remove more stock than is available."
+        );
+
+        return;
+
+    }
 
 
-    localStorage.setItem(
-        "inventoryMovements",
-        JSON.stringify(movements)
-    );
+    const submitButton =
+        event.target.querySelector(
+            'button[type="submit"]'
+        );
+
+
+    const originalText =
+        submitButton
+            ? submitButton.textContent
+            : "";
+
+
+    try {
+
+        if (submitButton) {
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Saving...";
+
+        }
+
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/products/${selectedProductId}/stock`,
+                {
+                    method: "PATCH",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        action: action,
+                        quantity: quantity
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to adjust stock."
+            );
+
+        }
+
+
+        console.log(
+            "STOCK ADJUSTMENT:",
+            data
+        );
+
+
+        closeStockModal();
+
+        /*
+         * Reload from SQLite instead of
+         * modifying the local array manually.
+         *
+         * This guarantees that the UI
+         * reflects the actual database.
+         */
+
+        await loadProducts();
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "STOCK ADJUSTMENT ERROR:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to adjust stock."
+        );
+
+    }
+
+    finally {
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                originalText || "Save Adjustment";
+
+        }
+
+    }
 
 }
 
@@ -1049,9 +1162,7 @@ function initializeTheme() {
 
 
     const savedTheme =
-        localStorage.getItem(
-            "theme"
-        );
+        localStorage.getItem("theme");
 
 
     if (

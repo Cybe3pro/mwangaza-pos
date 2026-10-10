@@ -3,21 +3,15 @@
 // Sales History & Analytics Controller
 //
 // DATA SOURCE:
-// localStorage.salesHistory
+// Flask API → SQLite database
 //
-// RECEIPT:
-// localStorage.lastSale
+// ENDPOINT:
+// GET /api/sales
 // ============================================================
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        initializeSalesHistory();
-
-    }
-);
+const API_BASE_URL =
+    "http://127.0.0.1:5000/api";
 
 
 // ============================================================
@@ -33,15 +27,23 @@ let weeklyChart = null;
 // INITIALIZE
 // ============================================================
 
-function initializeSalesHistory() {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    loadSales();
+        initializeSalesHistory();
+
+    }
+);
+
+
+function initializeSalesHistory() {
 
     initializeTheme();
 
     initializeSearch();
 
-    renderAll();
+    loadSales();
 
     refreshIcons();
 
@@ -49,48 +51,254 @@ function initializeSalesHistory() {
 
 
 // ============================================================
-// LOAD SALES
+// LOAD SALES FROM BACKEND
 // ============================================================
 
-function loadSales() {
+async function loadSales() {
+
+    const table =
+        document.getElementById(
+            "salesHistory"
+        );
+
+    const emptyState =
+        document.getElementById(
+            "emptyHistory"
+        );
+
 
     try {
 
-        const storedSales =
-            localStorage.getItem(
-                "salesHistory"
-            );
+        // ----------------------------------------------------
+        // Loading state
+        // ----------------------------------------------------
 
+        if (table) {
 
-        if (!storedSales) {
+            table.innerHTML = `
 
-            allSales = [];
+                <tr>
 
-            return;
+                    <td
+                        colspan="7"
+                        class="px-6 py-12
+                               text-center">
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   items-center
+                                   gap-3">
+
+                            <div
+                                class="w-10 h-10
+                                       border-4
+                                       border-green-200
+                                       border-t-green-600
+                                       rounded-full
+                                       animate-spin">
+                            </div>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       dark:text-gray-400">
+
+                                Loading sales history...
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
 
         }
 
 
-        const parsed =
-            JSON.parse(
-                storedSales
+        // ----------------------------------------------------
+        // Request sales
+        // ----------------------------------------------------
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/sales`
             );
 
 
+        if (!response.ok) {
+
+            throw new Error(
+                `Server returned ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        // ----------------------------------------------------
+        // Validate response
+        // ----------------------------------------------------
+
+        if (
+            data.status !== "success"
+            || !Array.isArray(data.sales)
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Invalid sales data received."
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // Store sales
+        // ----------------------------------------------------
+
         allSales =
-            Array.isArray(parsed)
-                ? parsed
-                : [];
+            data.sales;
+
+
+        console.log(
+            "SALES HISTORY LOADED:",
+            allSales
+        );
+
+
+        // ----------------------------------------------------
+        // Render everything
+        // ----------------------------------------------------
+
+        renderAll();
 
 
     } catch (error) {
 
         console.error(
-            "SimplePOS: Could not load sales history.",
+            "SALES HISTORY LOAD ERROR:",
             error
         );
 
+
         allSales = [];
+
+
+        if (table) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="px-6 py-12
+                               text-center">
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   items-center">
+
+                            <div
+                                class="w-14 h-14
+                                       rounded-2xl
+                                       bg-red-100
+                                       dark:bg-red-900/30
+                                       text-red-500
+                                       flex
+                                       items-center
+                                       justify-center">
+
+                                <i
+                                    data-lucide="wifi-off"
+                                    class="w-7 h-7">
+                                </i>
+
+                            </div>
+
+
+                            <h3
+                                class="font-semibold
+                                       text-lg
+                                       mt-4">
+
+                                Unable to load sales
+
+                            </h3>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       dark:text-gray-400
+                                       mt-1">
+
+                                Make sure the Mwangaza
+                                backend is running.
+
+                            </p>
+
+
+                            <button
+                                type="button"
+                                id="retrySales"
+                                class="mt-4
+                                       px-4 py-2
+                                       bg-green-600
+                                       hover:bg-green-700
+                                       text-white
+                                       rounded-xl
+                                       font-medium">
+
+                                Try Again
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            const retryButton =
+                document.getElementById(
+                    "retrySales"
+                );
+
+
+            if (retryButton) {
+
+                retryButton.addEventListener(
+                    "click",
+                    loadSales
+                );
+
+            }
+
+        }
+
+
+        if (emptyState) {
+
+            emptyState.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        refreshIcons();
 
     }
 
@@ -153,21 +361,6 @@ function renderSummary() {
         getWeekSales();
 
 
-    const totalRevenue =
-        allSales.reduce(
-            (
-                total,
-                sale
-            ) => {
-
-                return total +
-                    getSaleTotal(sale);
-
-            },
-            0
-        );
-
-
     const totalItems =
         allSales.reduce(
             (
@@ -175,8 +368,10 @@ function renderSummary() {
                 sale
             ) => {
 
-                return total +
-                    getSaleItemCount(sale);
+                return (
+                    total +
+                    getSaleItemCount(sale)
+                );
 
             },
             0
@@ -234,7 +429,9 @@ function getTodaySales() {
         ) => {
 
             const date =
-                new Date(sale.date);
+                parseSaleDate(
+                    sale.date
+                );
 
 
             if (
@@ -244,8 +441,10 @@ function getTodaySales() {
                 )
             ) {
 
-                return total +
-                    getSaleTotal(sale);
+                return (
+                    total +
+                    getSaleTotal(sale)
+                );
 
             }
 
@@ -278,15 +477,19 @@ function getWeekSales() {
         ) => {
 
             const date =
-                new Date(sale.date);
+                parseSaleDate(
+                    sale.date
+                );
 
 
             if (
                 date >= weekStart
             ) {
 
-                return total +
-                    getSaleTotal(sale);
+                return (
+                    total +
+                    getSaleTotal(sale)
+                );
 
             }
 
@@ -313,12 +516,16 @@ function renderWeeklyChart() {
 
 
     if (!canvas) {
+
         return;
+
     }
 
 
     const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
 
 
     const weekStart =
@@ -340,23 +547,24 @@ function renderWeeklyChart() {
     ];
 
 
-    const dailySales =
-        [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ];
+    const dailySales = [
+
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+
+    ];
 
 
     allSales.forEach(
         sale => {
 
             const date =
-                new Date(
+                parseSaleDate(
                     sale.date
                 );
 
@@ -459,13 +667,17 @@ function renderWeeklyChart() {
                             callbacks: {
 
                                 label:
-                                    function(context) {
+                                    function(
+                                        context
+                                    ) {
 
                                         return (
                                             " KSh " +
                                             Number(
                                                 context.raw
-                                            ).toLocaleString()
+                                            ).toLocaleString(
+                                                "en-KE"
+                                            )
                                         );
 
                                     }
@@ -485,13 +697,17 @@ function renderWeeklyChart() {
                             ticks: {
 
                                 callback:
-                                    function(value) {
+                                    function(
+                                        value
+                                    ) {
 
                                         return (
                                             "KSh " +
                                             Number(
                                                 value
-                                            ).toLocaleString()
+                                            ).toLocaleString(
+                                                "en-KE"
+                                            )
                                         );
 
                                     }
@@ -544,8 +760,10 @@ function renderInsights() {
                 sale
             ) => {
 
-                return total +
-                    getSaleTotal(sale);
+                return (
+                    total +
+                    getSaleTotal(sale)
+                );
 
             },
             0
@@ -554,8 +772,7 @@ function renderInsights() {
 
     const average =
         allSales.length > 0
-            ? revenue /
-              allSales.length
+            ? revenue / allSales.length
             : 0;
 
 
@@ -615,7 +832,9 @@ function renderInsights() {
 
 function getBestSalesDay() {
 
-    if (allSales.length === 0) {
+    if (
+        allSales.length === 0
+    ) {
 
         return null;
 
@@ -629,7 +848,7 @@ function getBestSalesDay() {
         sale => {
 
             const date =
-                new Date(
+                parseSaleDate(
                     sale.date
                 );
 
@@ -815,7 +1034,9 @@ function renderPaymentBreakdown() {
 
 
     if (!container) {
+
         return;
+
     }
 
 
@@ -862,7 +1083,9 @@ function renderPaymentBreakdown() {
         );
 
 
-    if (entries.length === 0) {
+    if (
+        entries.length === 0
+    ) {
 
         container.innerHTML = `
 
@@ -917,7 +1140,9 @@ function renderPaymentBreakdown() {
                         <p
                             class="font-semibold">
 
-                            ${escapeHtml(method)}
+                            ${escapeHtml(
+                                method
+                            )}
 
                         </p>
 
@@ -928,6 +1153,7 @@ function renderPaymentBreakdown() {
                                    mt-1">
 
                             ${data.transactions}
+
                             ${
                                 data.transactions === 1
                                     ? "transaction"
@@ -951,7 +1177,9 @@ function renderPaymentBreakdown() {
                            font-bold
                            mt-3">
 
-                    ${formatCurrency(data.total)}
+                    ${formatCurrency(
+                        data.total
+                    )}
 
                 </p>
 
@@ -991,7 +1219,9 @@ function renderSalesTable(
 
 
     if (!table) {
+
         return;
+
     }
 
 
@@ -1025,15 +1255,11 @@ function renderSalesTable(
     }
 
 
-    const reversedSales =
-        [...sales].reverse();
-
-
-    reversedSales.forEach(
+    sales.forEach(
         sale => {
 
             const date =
-                new Date(
+                parseSaleDate(
                     sale.date
                 );
 
@@ -1158,9 +1384,7 @@ function renderSalesTable(
                                hover:underline
                                text-sm
                                font-medium"
-                        data-receipt="${escapeHtml(
-                            sale.receiptNumber || ""
-                        )}">
+                        data-sale-id="${sale.id}">
 
                         View Receipt
 
@@ -1201,51 +1425,91 @@ function attachReceiptButtons() {
 
                 button.addEventListener(
                     "click",
-                    () => {
+                    async () => {
 
-                        const receiptNumber =
-                            button.dataset.receipt;
-
-
-                        const sale =
-                            allSales.find(
-                                item =>
-                                    String(
-                                        item.receiptNumber
-                                    ) ===
-                                    String(
-                                        receiptNumber
-                                    )
-                            );
+                        const saleId =
+                            button.dataset.saleId;
 
 
-                        if (!sale) {
-
-                            alert(
-                                "Sale record not found."
-                            );
-
-                            return;
-
-                        }
-
-
-                        localStorage.setItem(
-                            "lastSale",
-                            JSON.stringify(
-                                sale
-                            )
+                        await openReceipt(
+                            saleId
                         );
-
-
-                        window.location.href =
-                            "receipt.html";
 
                     }
                 );
 
             }
         );
+
+}
+
+
+// ============================================================
+// OPEN RECEIPT
+// ============================================================
+
+async function openReceipt(
+    saleId
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/sales/${saleId}`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Server returned ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.status !== "success"
+            || !data.sale
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load receipt."
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // Temporary bridge to receipt.html
+        // ----------------------------------------------------
+        // We will remove this localStorage bridge when
+        // receipt.js is migrated to the API.
+
+        window.location.href =
+    `receipt.html?id=${saleId}`;
+
+
+    } catch (error) {
+
+        console.error(
+            "RECEIPT LOAD ERROR:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to load receipt."
+        );
+
+    }
 
 }
 
@@ -1263,7 +1527,9 @@ function initializeSearch() {
 
 
     if (!searchInput) {
+
         return;
+
     }
 
 
@@ -1309,7 +1575,8 @@ function initializeSearch() {
 
 
                         return (
-                            receipt.includes(term) ||
+                            receipt.includes(term)
+                            ||
                             payment.includes(term)
                         );
 
@@ -1421,7 +1688,9 @@ function initializeTheme() {
     function updateThemeIcon() {
 
         if (!themeIcon) {
+
             return;
+
         }
 
 
@@ -1460,7 +1729,9 @@ function getSaleTotal(
         );
 
 
-    return Number.isFinite(total)
+    return Number.isFinite(
+        total
+    )
         ? total
         : 0;
 
@@ -1492,17 +1763,43 @@ function getSaleItemCount(
             item
         ) => {
 
-            return total +
+            return (
+                total +
                 (
                     Number(
                         item.quantity
                     ) || 0
-                );
+                )
+            );
 
         },
         0
     );
 
+}
+
+
+// ============================================================
+// PARSE DATABASE DATE
+// ============================================================
+
+function parseSaleDate(dateValue) {
+
+    if (!dateValue) {
+        return new Date(NaN);
+    }
+
+    const normalized =
+        String(dateValue)
+            .replace(" ", "T");
+
+    // SQLite CURRENT_TIMESTAMP is stored in UTC.
+    // "Z" explicitly tells JavaScript that the
+    // timestamp is UTC, allowing it to convert
+    // it to the user's local timezone.
+    return new Date(
+        `${normalized}Z`
+    );
 }
 
 
@@ -1515,7 +1812,9 @@ function getStartOfWeek(
 ) {
 
     const result =
-        new Date(date);
+        new Date(
+            date
+        );
 
 
     result.setHours(
@@ -1529,8 +1828,6 @@ function getStartOfWeek(
     const day =
         result.getDay();
 
-
-    // Convert Sunday=0 to Monday-based week.
 
     const difference =
         day === 0
@@ -1560,10 +1857,14 @@ function isSameDay(
 
     return (
         date1.getFullYear() ===
-        date2.getFullYear() &&
+        date2.getFullYear()
+
+        &&
 
         date1.getMonth() ===
-        date2.getMonth() &&
+        date2.getMonth()
+
+        &&
 
         date1.getDate() ===
         date2.getDate()

@@ -5,12 +5,15 @@
 // DATA SOURCES
 // ------------------------------------------------------------
 // Products:
-// localStorage.products
+// Flask API → GET /api/products
 //
 // Sales:
-// localStorage.salesHistory
+// Flask API → GET /api/sales
 //
-// This page uses the same data as:
+// Database:
+// SQLite
+//
+// This page uses the same backend data as:
 // - sales.js
 // - products.js
 // - inventory.js
@@ -18,9 +21,18 @@
 // - dashboard.js
 // ============================================================
 
+
 document.addEventListener("DOMContentLoaded", () => {
     initializeReports();
 });
+
+
+// ============================================================
+// API CONFIGURATION
+// ============================================================
+
+const API_BASE_URL =
+    "http://127.0.0.1:5000/api";
 
 
 // ============================================================
@@ -102,15 +114,23 @@ function initializeReports() {
             : "week";
 
 
+    let currentSales = [];
+
+    let currentProducts = [];
+
+
     // ========================================================
     // INITIALIZATION
     // ========================================================
 
     initializeClock();
+
     initializeTheme();
+
     initializePeriodSelector();
-    initializeStorageListener();
+
     initializeAutoRefresh();
+
     initializeExportButtons();
 
     loadReports();
@@ -120,101 +140,70 @@ function initializeReports() {
     // LOAD REPORTS
     // ========================================================
 
-    function loadReports() {
-
-        const sales =
-            getSales();
-
-        const products =
-            getProducts();
-
-        const filteredSales =
-            filterSalesByPeriod(
-                sales,
-                currentPeriod
-            );
-
-
-        updateSummaryCards(
-            filteredSales
-        );
-
-
-        updateSalesTrendChart(
-            filteredSales
-        );
-
-
-        updatePaymentChart(
-            filteredSales
-        );
-
-
-        updateBestSellingProducts(
-            filteredSales
-        );
-
-
-        updateInventorySnapshot(
-            products
-        );
-
-
-        refreshIcons();
-
-    }
-
-
-    // ========================================================
-    // GET SALES
-    // ========================================================
-
-    function getSales() {
+    async function loadReports() {
 
         try {
 
-            const storedSales =
-                localStorage.getItem(
-                    "salesHistory"
+            const [
+                sales,
+                products
+            ] = await Promise.all([
+                fetchSales(),
+                fetchProducts()
+            ]);
+
+
+            currentSales =
+                sales;
+
+            currentProducts =
+                products;
+
+
+            const filteredSales =
+                filterSalesByPeriod(
+                    currentSales,
+                    currentPeriod
                 );
 
 
-            if (!storedSales) {
-                return [];
-            }
-
-
-            const parsed =
-                JSON.parse(
-                    storedSales
-                );
-
-
-            if (!Array.isArray(parsed)) {
-
-                console.warn(
-                    "SimplePOS Reports: salesHistory is not an array."
-                );
-
-                return [];
-
-            }
-
-
-            return parsed.filter(
-                sale =>
-                    sale &&
-                    sale.date
+            updateSummaryCards(
+                filteredSales
             );
+
+
+            updateSalesTrendChart(
+                filteredSales
+            );
+
+
+            updatePaymentChart(
+                filteredSales
+            );
+
+
+            updateBestSellingProducts(
+                filteredSales
+            );
+
+
+            updateInventorySnapshot(
+                currentProducts
+            );
+
+
+            refreshIcons();
+
 
         } catch (error) {
 
             console.error(
-                "SimplePOS Reports: Could not load sales.",
+                "SimplePOS Reports: Failed to load report data.",
                 error
             );
 
-            return [];
+
+            showReportError();
 
         }
 
@@ -222,51 +211,208 @@ function initializeReports() {
 
 
     // ========================================================
-    // GET PRODUCTS
+    // FETCH SALES
     // ========================================================
 
-    function getProducts() {
+    async function fetchSales() {
 
-        try {
-
-            const storedProducts =
-                localStorage.getItem(
-                    "products"
-                );
-
-
-            if (!storedProducts) {
-                return [];
-            }
-
-
-            const parsed =
-                JSON.parse(
-                    storedProducts
-                );
-
-
-            if (!Array.isArray(parsed)) {
-
-                console.warn(
-                    "SimplePOS Reports: products is not an array."
-                );
-
-                return [];
-
-            }
-
-
-            return parsed;
-
-        } catch (error) {
-
-            console.error(
-                "SimplePOS Reports: Could not load products.",
-                error
+        const response =
+            await fetch(
+                `${API_BASE_URL}/sales`
             );
 
-            return [];
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Sales API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !result ||
+            result.status !== "success" ||
+            !Array.isArray(result.sales)
+        ) {
+
+            throw new Error(
+                "Invalid sales API response."
+            );
+
+        }
+
+
+        return result.sales;
+
+    }
+
+
+    // ========================================================
+    // FETCH PRODUCTS
+    // ========================================================
+
+    async function fetchProducts() {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/products`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Products API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!Array.isArray(result)) {
+
+            throw new Error(
+                "Invalid products API response."
+            );
+
+        }
+
+
+        return result.map(
+            product => ({
+
+                id:
+                    product.ID,
+
+                name:
+                    product.NAME,
+
+                category:
+                    product.CATEGORY,
+
+                price:
+                    Number(
+                        product.PRICE
+                    ) || 0,
+
+                stock:
+                    Number(
+                        product.STOCK
+                    ) || 0,
+
+                lowStockThreshold:
+                    Number(
+                        product.LOW_STOCK_THRESHOLD
+                    ) || 5,
+
+                createdAt:
+                    product.CREATED_AT,
+
+                updatedAt:
+                    product.UPDATED_AT
+
+            })
+        );
+
+    }
+
+
+    // ========================================================
+    // SHOW REPORT ERROR
+    // ========================================================
+
+    function showReportError() {
+
+        if (totalSalesElement) {
+
+            totalSalesElement.textContent =
+                "KSh 0";
+
+        }
+
+
+        if (transactionsElement) {
+
+            transactionsElement.textContent =
+                "0";
+
+        }
+
+
+        if (productsSoldElement) {
+
+            productsSoldElement.textContent =
+                "0";
+
+        }
+
+
+        if (averageSaleElement) {
+
+            averageSaleElement.textContent =
+                "KSh 0";
+
+        }
+
+
+        if (paymentSummary) {
+
+            paymentSummary.innerHTML = `
+
+                <div
+                    class="
+                        text-center
+                        text-sm
+                        text-red-500
+                        dark:text-red-400
+                        py-4
+                    "
+                >
+
+                    Unable to load report data.
+                    Please make sure the
+                    Mwangaza POS backend is running.
+
+                </div>
+
+            `;
+
+        }
+
+
+        if (bestSellingProducts) {
+
+            bestSellingProducts.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="
+                            px-6
+                            py-10
+                            text-center
+                            text-red-500
+                            dark:text-red-400
+                        "
+                    >
+
+                        Unable to load report data.
+
+                    </td>
+
+                </tr>
+
+            `;
 
         }
 
@@ -365,7 +511,7 @@ function initializeReports() {
             sale => {
 
                 const saleDate =
-                    new Date(
+                    parseSaleDate(
                         sale.date
                     );
 
@@ -401,7 +547,9 @@ function initializeReports() {
 
                     return (
                         total +
-                        getSaleTotal(sale)
+                        getSaleTotal(
+                            sale
+                        )
                     );
 
                 },
@@ -425,7 +573,9 @@ function initializeReports() {
                             sale.items
                         )
                     ) {
+
                         return total;
+
                     }
 
 
@@ -458,7 +608,8 @@ function initializeReports() {
 
         const averageSale =
             transactions > 0
-                ? totalSales / transactions
+                ? totalSales /
+                  transactions
                 : 0;
 
 
@@ -552,7 +703,8 @@ function initializeReports() {
                 ctx,
                 {
 
-                    type: "line",
+                    type:
+                        "line",
 
                     data: {
 
@@ -705,6 +857,7 @@ function initializeReports() {
     ) {
 
         const labels = [];
+
         const values = [];
 
 
@@ -733,9 +886,20 @@ function initializeReports() {
                 sale => {
 
                     const date =
-                        new Date(
+                        parseSaleDate(
                             sale.date
                         );
+
+
+                    if (
+                        isNaN(
+                            date.getTime()
+                        )
+                    ) {
+
+                        return;
+
+                    }
 
 
                     const hour =
@@ -797,9 +961,20 @@ function initializeReports() {
                 sale => {
 
                     const date =
-                        new Date(
+                        parseSaleDate(
                             sale.date
                         );
+
+
+                    if (
+                        isNaN(
+                            date.getTime()
+                        )
+                    ) {
+
+                        return;
+
+                    }
 
 
                     let day =
@@ -874,9 +1049,20 @@ function initializeReports() {
                 sale => {
 
                     const date =
-                        new Date(
+                        parseSaleDate(
                             sale.date
                         );
+
+
+                    if (
+                        isNaN(
+                            date.getTime()
+                        )
+                    ) {
+
+                        return;
+
+                    }
 
 
                     const day =
@@ -918,9 +1104,20 @@ function initializeReports() {
             sale => {
 
                 const date =
-                    new Date(
+                    parseSaleDate(
                         sale.date
                     );
+
+
+                if (
+                    isNaN(
+                        date.getTime()
+                    )
+                ) {
+
+                    return;
+
+                }
 
 
                 const key =
@@ -930,7 +1127,10 @@ function initializeReports() {
 
 
                 if (!grouped[key]) {
-                    grouped[key] = 0;
+
+                    grouped[key] =
+                        0;
+
                 }
 
 
@@ -1244,7 +1444,8 @@ function initializeReports() {
                         text-sm
                         text-gray-400
                         py-4
-                    ">
+                    "
+                >
 
                     No payments recorded
                     for this period.
@@ -1312,13 +1513,15 @@ function initializeReports() {
                                 class="
                                     font-medium
                                     truncate
-                                ">
+                                "
+                            >
 
                                 ${escapeHtml(
                                     method
                                 )}
 
                             </p>
+
 
                             <div
                                 class="
@@ -1328,7 +1531,8 @@ function initializeReports() {
                                     bg-gray-100
                                     dark:bg-slate-800
                                     overflow-hidden
-                                ">
+                                "
+                            >
 
                                 <div
                                     class="
@@ -1338,7 +1542,8 @@ function initializeReports() {
                                     "
                                     style="
                                         width: ${percentage}%;
-                                    ">
+                                    "
+                                >
                                 </div>
 
                             </div>
@@ -1350,13 +1555,15 @@ function initializeReports() {
                             class="
                                 text-right
                                 shrink-0
-                            ">
+                            "
+                        >
 
                             <p
                                 class="
                                     font-semibold
                                     text-sm
-                                ">
+                                "
+                            >
 
                                 ${formatCurrency(
                                     amount
@@ -1370,7 +1577,8 @@ function initializeReports() {
                                     text-xs
                                     text-gray-500
                                     dark:text-gray-400
-                                ">
+                                "
+                            >
 
                                 ${percentage.toFixed(1)}%
 
@@ -1408,112 +1616,13 @@ function initializeReports() {
             "";
 
 
-        const productStats = {};
-
-
-        sales.forEach(
-            sale => {
-
-                if (
-                    !Array.isArray(
-                        sale.items
-                    )
-                ) {
-                    return;
-                }
-
-
-                sale.items.forEach(
-                    item => {
-
-                        const id =
-                            String(
-                                item.id ??
-                                item.name ??
-                                "unknown"
-                            );
-
-
-                        if (
-                            !productStats[id]
-                        ) {
-
-                            productStats[id] = {
-
-                                id:
-                                    item.id,
-
-                                name:
-                                    item.name ||
-                                    "Unknown Product",
-
-                                quantity:
-                                    0,
-
-                                revenue:
-                                    0
-
-                            };
-
-                        }
-
-
-                        const quantity =
-                            Number(
-                                item.quantity
-                            ) || 0;
-
-
-                        const subtotal =
-                            Number(
-                                item.subtotal
-                            );
-
-
-                        const price =
-                            Number(
-                                item.price
-                            ) || 0;
-
-
-                        const revenue =
-                            Number.isFinite(
-                                subtotal
-                            )
-                                ? subtotal
-                                : price *
-                                  quantity;
-
-
-                        productStats[id].quantity +=
-                            quantity;
-
-
-                        productStats[id].revenue +=
-                            revenue;
-
-                    }
-                );
-
-            }
-        );
-
-
-        const products =
-            Object.values(
-                productStats
-            )
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    b.revenue -
-                    a.revenue
+        const productStats =
+            buildProductStatistics(
+                sales
             );
 
 
-        if (products.length === 0) {
+        if (productStats.length === 0) {
 
             bestSellingProducts.innerHTML = `
 
@@ -1526,7 +1635,8 @@ function initializeReports() {
                             py-10
                             text-center
                             text-gray-400
-                        ">
+                        "
+                    >
 
                         No product sales recorded
                         for this period.
@@ -1543,10 +1653,10 @@ function initializeReports() {
 
 
         const highestRevenue =
-            products[0].revenue;
+            productStats[0].revenue;
 
 
-        products.forEach(
+        productStats.forEach(
             (
                 product,
                 index
@@ -1579,7 +1689,8 @@ function initializeReports() {
                             px-6
                             py-4
                             font-semibold
-                        ">
+                        "
+                    >
 
                         #${index + 1}
 
@@ -1590,14 +1701,16 @@ function initializeReports() {
                         class="
                             px-6
                             py-4
-                        ">
+                        "
+                    >
 
                         <div
                             class="
                                 flex
                                 items-center
                                 gap-3
-                            ">
+                            "
+                        >
 
                             <div
                                 class="
@@ -1610,11 +1723,13 @@ function initializeReports() {
                                     flex
                                     items-center
                                     justify-center
-                                ">
+                                "
+                            >
 
                                 <i
                                     data-lucide="package"
-                                    class="w-4">
+                                    class="w-4"
+                                >
                                 </i>
 
                             </div>
@@ -1625,7 +1740,8 @@ function initializeReports() {
                                     font-medium
                                     truncate
                                     max-w-[180px]
-                                ">
+                                "
+                            >
 
                                 ${escapeHtml(
                                     product.name
@@ -1643,7 +1759,8 @@ function initializeReports() {
                             px-6
                             py-4
                             text-sm
-                        ">
+                        "
+                    >
 
                         ${product.quantity.toLocaleString()}
 
@@ -1655,7 +1772,8 @@ function initializeReports() {
                             px-6
                             py-4
                             font-semibold
-                        ">
+                        "
+                    >
 
                         ${formatCurrency(
                             product.revenue
@@ -1668,7 +1786,8 @@ function initializeReports() {
                         class="
                             px-6
                             py-4
-                        ">
+                        "
+                    >
 
                         <div
                             class="
@@ -1676,7 +1795,8 @@ function initializeReports() {
                                 items-center
                                 gap-3
                                 justify-end
-                            ">
+                            "
+                        >
 
                             <div
                                 class="
@@ -1686,7 +1806,8 @@ function initializeReports() {
                                     bg-gray-100
                                     dark:bg-slate-800
                                     overflow-hidden
-                                ">
+                                "
+                            >
 
                                 <div
                                     class="
@@ -1696,7 +1817,8 @@ function initializeReports() {
                                     "
                                     style="
                                         width: ${performance}%;
-                                    ">
+                                    "
+                                >
                                 </div>
 
                             </div>
@@ -1709,7 +1831,8 @@ function initializeReports() {
                                     dark:text-gray-400
                                     w-10
                                     text-right
-                                ">
+                                "
+                            >
 
                                 ${Math.round(
                                     performance
@@ -1829,7 +1952,7 @@ function initializeReports() {
                     "week";
 
 
-                loadReports();
+                renderCurrentReport();
 
             }
         );
@@ -1838,28 +1961,44 @@ function initializeReports() {
 
 
     // ========================================================
-    // STORAGE LISTENER
+    // RENDER CURRENT REPORT
     // ========================================================
 
-    function initializeStorageListener() {
+    function renderCurrentReport() {
 
-        window.addEventListener(
-            "storage",
-            event => {
+        const filteredSales =
+            filterSalesByPeriod(
+                currentSales,
+                currentPeriod
+            );
 
-                if (
-                    event.key ===
-                    "salesHistory" ||
-                    event.key ===
-                    "products"
-                ) {
 
-                    loadReports();
-
-                }
-
-            }
+        updateSummaryCards(
+            filteredSales
         );
+
+
+        updateSalesTrendChart(
+            filteredSales
+        );
+
+
+        updatePaymentChart(
+            filteredSales
+        );
+
+
+        updateBestSellingProducts(
+            filteredSales
+        );
+
+
+        updateInventorySnapshot(
+            currentProducts
+        );
+
+
+        refreshIcons();
 
     }
 
@@ -1870,54 +2009,13 @@ function initializeReports() {
 
     function initializeAutoRefresh() {
 
-        let previousSales =
-            localStorage.getItem(
-                "salesHistory"
-            ) || "";
-
-
-        let previousProducts =
-            localStorage.getItem(
-                "products"
-            ) || "";
-
-
         setInterval(
             () => {
 
-                const currentSales =
-                    localStorage.getItem(
-                        "salesHistory"
-                    ) || "";
-
-
-                const currentProducts =
-                    localStorage.getItem(
-                        "products"
-                    ) || "";
-
-
-                if (
-                    currentSales !==
-                    previousSales ||
-                    currentProducts !==
-                    previousProducts
-                ) {
-
-                    previousSales =
-                        currentSales;
-
-
-                    previousProducts =
-                        currentProducts;
-
-
-                    loadReports();
-
-                }
+                loadReports();
 
             },
-            2000
+            10000
         );
 
     }
@@ -2130,6 +2228,64 @@ function initializeReports() {
 
 
     // ========================================================
+    // SALE DATE PARSER
+    // ========================================================
+
+    function parseSaleDate(
+        dateValue
+    ) {
+
+        if (!dateValue) {
+
+            return new Date(NaN);
+
+        }
+
+
+        const stringValue =
+            String(
+                dateValue
+            );
+
+
+        // ----------------------------------------------------
+        // SQLite format:
+        // YYYY-MM-DD HH:MM:SS
+        // ----------------------------------------------------
+
+        const normalized =
+            stringValue.replace(
+                " ",
+                "T"
+            );
+
+
+        // ----------------------------------------------------
+        // If the backend timestamp has no timezone,
+        // treat it as UTC.
+        // ----------------------------------------------------
+
+        if (
+            !/[zZ]|[+-]\d{2}:?\d{2}$/.test(
+                normalized
+            )
+        ) {
+
+            return new Date(
+                `${normalized}Z`
+            );
+
+        }
+
+
+        return new Date(
+            normalized
+        );
+
+    }
+
+
+    // ========================================================
     // SALE TOTAL
     // ========================================================
 
@@ -2144,7 +2300,9 @@ function initializeReports() {
 
 
         if (
-            Number.isFinite(total)
+            Number.isFinite(
+                total
+            )
         ) {
 
             return total;
@@ -2166,7 +2324,7 @@ function initializeReports() {
 
                     const price =
                         Number(
-                            item.price
+                            item.unitPrice
                         ) || 0;
 
 
@@ -2190,6 +2348,122 @@ function initializeReports() {
 
 
         return 0;
+
+    }
+
+
+    // ========================================================
+    // BUILD PRODUCT STATISTICS
+    // ========================================================
+
+    function buildProductStatistics(
+        sales
+    ) {
+
+        const productStats = {};
+
+
+        sales.forEach(
+            sale => {
+
+                if (
+                    !Array.isArray(
+                        sale.items
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                sale.items.forEach(
+                    item => {
+
+                        const id =
+                            String(
+                                item.productId ??
+                                item.name ??
+                                "unknown"
+                            );
+
+
+                        if (
+                            !productStats[id]
+                        ) {
+
+                            productStats[id] = {
+
+                                id:
+                                    item.productId,
+
+                                name:
+                                    item.name ||
+                                    "Unknown Product",
+
+                                quantity:
+                                    0,
+
+                                revenue:
+                                    0
+
+                            };
+
+                        }
+
+
+                        const quantity =
+                            Number(
+                                item.quantity
+                            ) || 0;
+
+
+                        const itemTotal =
+                            Number(
+                                item.total
+                            );
+
+
+                        const unitPrice =
+                            Number(
+                                item.unitPrice
+                            ) || 0;
+
+
+                        const revenue =
+                            Number.isFinite(
+                                itemTotal
+                            )
+                                ? itemTotal
+                                : unitPrice *
+                                  quantity;
+
+
+                        productStats[id].quantity +=
+                            quantity;
+
+
+                        productStats[id].revenue +=
+                            revenue;
+
+                    }
+                );
+
+            }
+        );
+
+
+        return Object.values(
+            productStats
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                b.revenue -
+                a.revenue
+        );
 
     }
 
@@ -2306,381 +2580,401 @@ function initializeReports() {
     // EXPORT CSV
     // ========================================================
 
-    function exportCSV() {
+    async function exportCSV() {
 
-        const sales =
-            filterSalesByPeriod(
-                getSales(),
-                currentPeriod
-            );
+        try {
 
-
-        const products =
-            getProducts();
+            const sales =
+                filterSalesByPeriod(
+                    currentSales,
+                    currentPeriod
+                );
 
 
-        if (sales.length === 0) {
-
-            alert(
-                "There are no sales records available for the selected period."
-            );
-
-            return;
-
-        }
+            const products =
+                currentProducts;
 
 
-        const rows = [];
+            if (sales.length === 0) {
+
+                alert(
+                    "There are no sales records available for the selected period."
+                );
+
+                return;
+
+            }
 
 
-        rows.push([
-            "SimplePOS Sales Report"
-        ]);
-
-        rows.push([
-            "Shop",
-            "Mwangaza Mini Mart"
-        ]);
-
-        rows.push([
-            "Period",
-            getPeriodLabel(
-                currentPeriod
-            )
-        ]);
-
-        rows.push([
-            "Generated",
-            new Date().toLocaleString(
-                "en-KE"
-            )
-        ]);
-
-        rows.push([]);
+            const rows = [];
 
 
-        // ----------------------------------------------------
-        // SUMMARY
-        // ----------------------------------------------------
+            rows.push([
+                "SimplePOS Sales Report"
+            ]);
 
-        const totalSales =
-            sales.reduce(
-                (
-                    sum,
-                    sale
-                ) =>
-                    sum +
-                    getSaleTotal(
+            rows.push([
+                "Shop",
+                "Mwangaza Mini Mart"
+            ]);
+
+            rows.push([
+                "Period",
+                getPeriodLabel(
+                    currentPeriod
+                )
+            ]);
+
+            rows.push([
+                "Generated",
+                new Date().toLocaleString(
+                    "en-KE"
+                )
+            ]);
+
+            rows.push([]);
+
+
+            // ------------------------------------------------
+            // SUMMARY
+            // ------------------------------------------------
+
+            const totalSales =
+                sales.reduce(
+                    (
+                        sum,
                         sale
-                    ),
-                0
-            );
+                    ) =>
+                        sum +
+                        getSaleTotal(
+                            sale
+                        ),
+                    0
+                );
 
 
-        const transactions =
-            sales.length;
+            const transactions =
+                sales.length;
 
 
-        const productsSold =
-            sales.reduce(
-                (
-                    sum,
-                    sale
-                ) => {
+            const productsSold =
+                sales.reduce(
+                    (
+                        sum,
+                        sale
+                    ) => {
 
-                    if (
-                        !Array.isArray(
+                        if (
+                            !Array.isArray(
+                                sale.items
+                            )
+                        ) {
+
+                            return sum;
+
+                        }
+
+
+                        return (
+                            sum +
+                            sale.items.reduce(
+                                (
+                                    itemSum,
+                                    item
+                                ) =>
+                                    itemSum +
+                                    (
+                                        Number(
+                                            item.quantity
+                                        ) || 0
+                                    ),
+                                0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            const averageSale =
+                transactions > 0
+                    ? totalSales /
+                      transactions
+                    : 0;
+
+
+            rows.push([
+                "SUMMARY"
+            ]);
+
+            rows.push([
+                "Total Sales",
+                totalSales
+            ]);
+
+            rows.push([
+                "Transactions",
+                transactions
+            ]);
+
+            rows.push([
+                "Products Sold",
+                productsSold
+            ]);
+
+            rows.push([
+                "Average Sale",
+                averageSale
+            ]);
+
+            rows.push([]);
+
+
+            // ------------------------------------------------
+            // SALES
+            // ------------------------------------------------
+
+            rows.push([
+                "SALES TRANSACTIONS"
+            ]);
+
+            rows.push([
+                "Date",
+                "Payment Method",
+                "Items",
+                "Total"
+            ]);
+
+
+            sales.forEach(
+                sale => {
+
+                    const itemCount =
+                        Array.isArray(
                             sale.items
                         )
+                            ? sale.items.reduce(
+                                (
+                                    sum,
+                                    item
+                                ) =>
+                                    sum +
+                                    (
+                                        Number(
+                                            item.quantity
+                                        ) || 0
+                                    ),
+                                0
+                            )
+                            : 0;
+
+
+                    rows.push([
+                        formatExportDate(
+                            sale.date
+                        ),
+
+                        sale.paymentMethod ||
+                        "Cash",
+
+                        itemCount,
+
+                        getSaleTotal(
+                            sale
+                        )
+
+                    ]);
+
+                }
+            );
+
+
+            rows.push([]);
+
+
+            // ------------------------------------------------
+            // BEST SELLING PRODUCTS
+            // ------------------------------------------------
+
+            const productStats =
+                buildProductStatistics(
+                    sales
+                );
+
+
+            rows.push([
+                "BEST-SELLING PRODUCTS"
+            ]);
+
+            rows.push([
+                "Rank",
+                "Product",
+                "Units Sold",
+                "Revenue"
+            ]);
+
+
+            productStats.forEach(
+                (
+                    product,
+                    index
+                ) => {
+
+                    rows.push([
+                        index + 1,
+                        product.name,
+                        product.quantity,
+                        product.revenue
+                    ]);
+
+                }
+            );
+
+
+            rows.push([]);
+
+
+            // ------------------------------------------------
+            // INVENTORY
+            // ------------------------------------------------
+
+            let lowStock = 0;
+
+            let outOfStock = 0;
+
+
+            products.forEach(
+                product => {
+
+                    const stock =
+                        Number(
+                            product.stock
+                        ) || 0;
+
+
+                    const threshold =
+                        Number(
+                            product.lowStockThreshold
+                        ) || 5;
+
+
+                    if (stock <= 0) {
+
+                        outOfStock++;
+
+                    } else if (
+                        stock <= threshold
                     ) {
-                        return sum;
+
+                        lowStock++;
+
                     }
 
-
-                    return (
-                        sum +
-                        sale.items.reduce(
-                            (
-                                itemSum,
-                                item
-                            ) =>
-                                itemSum +
-                                (
-                                    Number(
-                                        item.quantity
-                                    ) || 0
-                                ),
-                            0
-                        )
-                    );
-
-                },
-                0
-            );
-
-
-        const averageSale =
-            transactions > 0
-                ? totalSales /
-                  transactions
-                : 0;
-
-
-        rows.push([
-            "SUMMARY"
-        ]);
-
-        rows.push([
-            "Total Sales",
-            totalSales
-        ]);
-
-        rows.push([
-            "Transactions",
-            transactions
-        ]);
-
-        rows.push([
-            "Products Sold",
-            productsSold
-        ]);
-
-        rows.push([
-            "Average Sale",
-            averageSale
-        ]);
-
-        rows.push([]);
-
-
-        // ----------------------------------------------------
-        // SALES
-        // ----------------------------------------------------
-
-        rows.push([
-            "SALES TRANSACTIONS"
-        ]);
-
-        rows.push([
-            "Date",
-            "Payment Method",
-            "Items",
-            "Total"
-        ]);
-
-
-        sales.forEach(
-            sale => {
-
-                const itemCount =
-                    Array.isArray(
-                        sale.items
-                    )
-                        ? sale.items.reduce(
-                            (
-                                sum,
-                                item
-                            ) =>
-                                sum +
-                                (
-                                    Number(
-                                        item.quantity
-                                    ) || 0
-                                ),
-                            0
-                        )
-                        : 0;
-
-
-                rows.push([
-                    formatExportDate(
-                        sale.date
-                    ),
-
-                    sale.paymentMethod ||
-                    "Cash",
-
-                    itemCount,
-
-                    getSaleTotal(
-                        sale
-                    )
-                ]);
-
-            }
-        );
-
-
-        rows.push([]);
-
-
-        // ----------------------------------------------------
-        // BEST SELLING PRODUCTS
-        // ----------------------------------------------------
-
-        const productStats =
-            buildProductStatistics(
-                sales
-            );
-
-
-        rows.push([
-            "BEST-SELLING PRODUCTS"
-        ]);
-
-        rows.push([
-            "Rank",
-            "Product",
-            "Units Sold",
-            "Revenue"
-        ]);
-
-
-        productStats.forEach(
-            (
-                product,
-                index
-            ) => {
-
-                rows.push([
-                    index + 1,
-                    product.name,
-                    product.quantity,
-                    product.revenue
-                ]);
-
-            }
-        );
-
-
-        rows.push([]);
-
-
-        // ----------------------------------------------------
-        // INVENTORY
-        // ----------------------------------------------------
-
-        let lowStock = 0;
-        let outOfStock = 0;
-
-
-        products.forEach(
-            product => {
-
-                const stock =
-                    Number(
-                        product.stock
-                    ) || 0;
-
-
-                const threshold =
-                    Number(
-                        product.lowStockThreshold
-                    ) || 5;
-
-
-                if (stock <= 0) {
-
-                    outOfStock++;
-
-                } else if (
-                    stock <= threshold
-                ) {
-
-                    lowStock++;
-
-                }
-
-            }
-        );
-
-
-        rows.push([
-            "INVENTORY SNAPSHOT"
-        ]);
-
-        rows.push([
-            "Total Products",
-            products.length
-        ]);
-
-        rows.push([
-            "Low Stock",
-            lowStock
-        ]);
-
-        rows.push([
-            "Out of Stock",
-            outOfStock
-        ]);
-
-
-        // ----------------------------------------------------
-        // CREATE CSV
-        // ----------------------------------------------------
-
-        const csv =
-            rows
-                .map(
-                    row =>
-                        row
-                            .map(
-                                value =>
-                                    csvEscape(
-                                        value
-                                    )
-                            )
-                            .join(",")
-                )
-                .join("\n");
-
-
-        const blob =
-            new Blob(
-                [csv],
-                {
-                    type:
-                        "text/csv;charset=utf-8;"
                 }
             );
 
 
-        const url =
-            URL.createObjectURL(
-                blob
+            rows.push([
+                "INVENTORY SNAPSHOT"
+            ]);
+
+            rows.push([
+                "Total Products",
+                products.length
+            ]);
+
+            rows.push([
+                "Low Stock",
+                lowStock
+            ]);
+
+            rows.push([
+                "Out of Stock",
+                outOfStock
+            ]);
+
+
+            // ------------------------------------------------
+            // CREATE CSV
+            // ------------------------------------------------
+
+            const csv =
+                rows
+                    .map(
+                        row =>
+                            row
+                                .map(
+                                    value =>
+                                        csvEscape(
+                                            value
+                                        )
+                                )
+                                .join(",")
+                    )
+                    .join("\n");
+
+
+            const blob =
+                new Blob(
+                    [csv],
+                    {
+                        type:
+                            "text/csv;charset=utf-8;"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                `SimplePOS_Report_${getFileDate()}.csv`;
+
+
+            document.body.appendChild(
+                link
             );
 
 
-        const link =
-            document.createElement(
-                "a"
+            link.click();
+
+
+            document.body.removeChild(
+                link
             );
 
 
-        link.href =
-            url;
+            URL.revokeObjectURL(
+                url
+            );
+
+        } catch (error) {
+
+            console.error(
+                "CSV EXPORT ERROR:",
+                error
+            );
 
 
-        link.download =
-            `SimplePOS_Report_${getFileDate()}.csv`;
+            alert(
+                "Unable to export the CSV report."
+            );
 
-
-        document.body.appendChild(
-            link
-        );
-
-
-        link.click();
-
-
-        document.body.removeChild(
-            link
-        );
-
-
-        URL.revokeObjectURL(
-            url
-        );
+        }
 
     }
 
@@ -2727,13 +3021,13 @@ function initializeReports() {
 
         const sales =
             filterSalesByPeriod(
-                getSales(),
+                currentSales,
                 currentPeriod
             );
 
 
         const products =
-            getProducts();
+            currentProducts;
 
 
         if (sales.length === 0) {
@@ -2781,7 +3075,9 @@ function initializeReports() {
                             sale.items
                         )
                     ) {
+
                         return sum;
+
                     }
 
 
@@ -2905,7 +3201,8 @@ function initializeReports() {
 
         doc.autoTable({
 
-            startY: 60,
+            startY:
+                60,
 
             head: [
                 [
@@ -3141,6 +3438,7 @@ function initializeReports() {
         // ----------------------------------------------------
 
         let lowStock = 0;
+
         let outOfStock = 0;
 
 
@@ -3273,117 +3571,6 @@ function initializeReports() {
 
 
     // ========================================================
-    // BUILD PRODUCT STATISTICS
-    // ========================================================
-
-    function buildProductStatistics(
-        sales
-    ) {
-
-        const productStats = {};
-
-
-        sales.forEach(
-            sale => {
-
-                if (
-                    !Array.isArray(
-                        sale.items
-                    )
-                ) {
-                    return;
-                }
-
-
-                sale.items.forEach(
-                    item => {
-
-                        const id =
-                            String(
-                                item.id ??
-                                item.name ??
-                                "unknown"
-                            );
-
-
-                        if (
-                            !productStats[id]
-                        ) {
-
-                            productStats[id] = {
-
-                                name:
-                                    item.name ||
-                                    "Unknown Product",
-
-                                quantity:
-                                    0,
-
-                                revenue:
-                                    0
-
-                            };
-
-                        }
-
-
-                        const quantity =
-                            Number(
-                                item.quantity
-                            ) || 0;
-
-
-                        const subtotal =
-                            Number(
-                                item.subtotal
-                            );
-
-
-                        const price =
-                            Number(
-                                item.price
-                            ) || 0;
-
-
-                        const revenue =
-                            Number.isFinite(
-                                subtotal
-                            )
-                                ? subtotal
-                                : price *
-                                  quantity;
-
-
-                        productStats[id].quantity +=
-                            quantity;
-
-
-                        productStats[id].revenue +=
-                            revenue;
-
-                    }
-                );
-
-            }
-        );
-
-
-        return Object.values(
-            productStats
-        )
-        .sort(
-            (
-                a,
-                b
-            ) =>
-                b.revenue -
-                a.revenue
-        );
-
-    }
-
-
-    // ========================================================
     // CSV ESCAPE
     // ========================================================
 
@@ -3495,7 +3682,7 @@ function initializeReports() {
     ) {
 
         const date =
-            new Date(
+            parseSaleDate(
                 dateValue
             );
 

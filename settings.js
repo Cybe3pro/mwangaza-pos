@@ -2,184 +2,124 @@
 // SimplePOS
 // SETTINGS CONTROLLER
 //
-// SETTINGS
-// localStorage.settings
+// DATA SOURCES
+// ------------------------------------------------------------
+// SQLite Database:
+// - Shop profile
+// - POS preferences
+// - Receipt settings
+// - Products
+// - Sales
+// - Backup / Restore
 //
-// THEME
-// localStorage.theme
-//
-// PRODUCTS
-// localStorage.products
-//
-// SALES HISTORY
-// localStorage.salesHistory
-//
-// LAST RECEIPT
-// localStorage.lastSale
+// localStorage:
+// - Theme preference only
 // ============================================================
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+// ============================================================
+// CONFIGURATION
+// ============================================================
 
-        initializeSettings();
+const API_BASE_URL = "http://127.0.0.1:5000/api";
 
-    }
-);
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    initializeSettings();
+});
 
 
 // ============================================================
 // INITIALIZE SETTINGS
 // ============================================================
 
-function initializeSettings() {
+async function initializeSettings() {
 
-    // ========================================================
+    // --------------------------------------------------------
     // ELEMENTS
-    // ========================================================
+    // --------------------------------------------------------
 
-    const themeToggle =
-        document.getElementById(
-            "themeToggle"
-        );
-
-    const themeIcon =
-        document.getElementById(
-            "themeIcon"
-        );
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
 
     const appearanceToggle =
-        document.getElementById(
-            "appearanceToggle"
-        );
+        document.getElementById("appearanceToggle");
 
     const appearanceToggleDot =
-        document.getElementById(
-            "appearanceToggleDot"
-        );
+        document.getElementById("appearanceToggleDot");
 
     const appearanceIcon =
-        document.getElementById(
-            "appearanceIcon"
-        );
+        document.getElementById("appearanceIcon");
 
     const systemThemeToggle =
-        document.getElementById(
-            "systemThemeToggle"
-        );
+        document.getElementById("systemThemeToggle");
 
     const systemThemeToggleDot =
-        document.getElementById(
-            "systemThemeToggleDot"
-        );
-
+        document.getElementById("systemThemeToggleDot");
 
     const shopName =
-        document.getElementById(
-            "shopName"
-        );
+        document.getElementById("shopName");
 
     const shopPhone =
-        document.getElementById(
-            "shopPhone"
-        );
+        document.getElementById("shopPhone");
 
     const shopEmail =
-        document.getElementById(
-            "shopEmail"
-        );
+        document.getElementById("shopEmail");
 
     const shopLocation =
-        document.getElementById(
-            "shopLocation"
-        );
-
+        document.getElementById("shopLocation");
 
     const currency =
-        document.getElementById(
-            "currency"
-        );
+        document.getElementById("currency");
 
     const defaultPayment =
-        document.getElementById(
-            "defaultPayment"
-        );
+        document.getElementById("defaultPayment");
 
     const lowStockThreshold =
-        document.getElementById(
-            "lowStockThreshold"
-        );
+        document.getElementById("lowStockThreshold");
 
     const receiptFooter =
-        document.getElementById(
-            "receiptFooter"
-        );
-
+        document.getElementById("receiptFooter");
 
     const showPhoneOnReceipt =
-        document.getElementById(
-            "showPhoneOnReceipt"
-        );
+        document.getElementById("showPhoneOnReceipt");
 
     const showLocationOnReceipt =
-        document.getElementById(
-            "showLocationOnReceipt"
-        );
-
+        document.getElementById("showLocationOnReceipt");
 
     const sidebarShopName =
-        document.getElementById(
-            "sidebarShopName"
-        );
-
+        document.getElementById("sidebarShopName");
 
     const saveShopProfile =
-        document.getElementById(
-            "saveShopProfile"
-        );
+        document.getElementById("saveShopProfile");
 
     const savePOSPreferences =
-        document.getElementById(
-            "savePOSPreferences"
-        );
+        document.getElementById("savePOSPreferences");
 
     const saveReceiptSettings =
-        document.getElementById(
-            "saveReceiptSettings"
-        );
-
+        document.getElementById("saveReceiptSettings");
 
     const exportDataButton =
-        document.getElementById(
-            "exportData"
-        );
+        document.getElementById("exportData");
 
     const importDataButton =
-        document.getElementById(
-            "importData"
-        );
+        document.getElementById("importData");
 
     const importFile =
-        document.getElementById(
-            "importFile"
-        );
+        document.getElementById("importFile");
 
     const clearAllData =
-        document.getElementById(
-            "clearAllData"
-        );
-
+        document.getElementById("clearAllData");
 
     const toast =
-        document.getElementById(
-            "toast"
-        );
+        document.getElementById("toast");
 
     const toastMessage =
-        document.getElementById(
-            "toastMessage"
-        );
+        document.getElementById("toastMessage");
 
 
     // ========================================================
@@ -188,84 +128,85 @@ function initializeSettings() {
 
     const defaultSettings = {
 
-        shopName:
-            "Mwangaza Mini Mart",
+        shopName: "Mwangaza Mini Mart",
 
-        shopPhone:
-            "",
+        shopPhone: "",
 
-        shopEmail:
-            "",
+        shopEmail: "",
 
-        shopLocation:
-            "",
+        shopLocation: "",
 
-        currency:
-            "KSh",
+        currency: "KSh",
 
-        defaultPayment:
-            "Cash",
+        defaultPayment: "Cash",
 
-        lowStockThreshold:
-            5,
+        lowStockThreshold: 5,
 
         receiptFooter:
             "Thank you for shopping with us!",
 
-        showPhoneOnReceipt:
-            true,
+        showPhoneOnReceipt: true,
 
-        showLocationOnReceipt:
-            true
+        showLocationOnReceipt: true
 
     };
 
 
     // ========================================================
-    // LOAD SETTINGS
+    // CURRENT SETTINGS
     // ========================================================
 
-    function getSettings() {
+    let settings = {
+        ...defaultSettings
+    };
+
+
+    // ========================================================
+    // LOAD SETTINGS FROM DATABASE
+    // ========================================================
+
+    async function loadSettings() {
 
         try {
 
-            const stored =
-                localStorage.getItem(
-                    "settings"
+            const response =
+                await fetch(`${API_BASE_URL}/settings`);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Server returned ${response.status}`
                 );
-
-
-            if (!stored) {
-
-                return {
-                    ...defaultSettings
-                };
 
             }
 
 
-            const parsed =
-                JSON.parse(stored);
+            const data =
+                await response.json();
 
 
             if (
-                !parsed ||
-                typeof parsed !== "object"
+                data.status !== "success" ||
+                !data.settings
             ) {
 
-                return {
-                    ...defaultSettings
-                };
+                throw new Error(
+                    data.message ||
+                    "Unable to load settings."
+                );
 
             }
 
 
-            return {
-
+            settings = {
                 ...defaultSettings,
-                ...parsed
-
+                ...data.settings
             };
+
+
+            loadForm();
+
 
         } catch (error) {
 
@@ -275,29 +216,125 @@ function initializeSettings() {
             );
 
 
-            return {
-                ...defaultSettings
-            };
+            showToast(
+                "Unable to load settings from the database.",
+                "error"
+            );
 
+
+            // ------------------------------------------------
+            // Temporary compatibility fallback
+            // ------------------------------------------------
+            //
+            // If the backend is unavailable, we can still
+            // display previously stored browser settings.
+            //
+            // These are NOT saved back automatically.
+            // ------------------------------------------------
+
+            try {
+
+                const stored =
+                    localStorage.getItem("settings");
+
+
+                if (stored) {
+
+                    const parsed =
+                        JSON.parse(stored);
+
+
+                    if (
+                        parsed &&
+                        typeof parsed === "object"
+                    ) {
+
+                        settings = {
+                            ...defaultSettings,
+                            ...parsed
+                        };
+
+                    }
+
+                }
+
+            } catch (fallbackError) {
+
+                console.error(
+                    "SimplePOS: Browser fallback failed.",
+                    fallbackError
+                );
+
+            }
+
+
+            loadForm();
         }
-
     }
 
 
     // ========================================================
-    // SAVE SETTINGS
+    // SAVE SETTINGS TO DATABASE
     // ========================================================
 
-    function saveSettings(settings) {
+    async function saveSettingsToDatabase(
+        updatedSettings
+    ) {
 
         try {
 
-            localStorage.setItem(
-                "settings",
-                JSON.stringify(settings)
-            );
+            const response =
+                await fetch(`${API_BASE_URL}/settings`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        updatedSettings
+                    )
+
+                });
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    `Server returned ${response.status}`
+                );
+
+            }
+
+
+            if (
+                data.status !== "success" ||
+                !data.settings
+            ) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to save settings."
+                );
+
+            }
+
+
+            settings = {
+                ...defaultSettings,
+                ...data.settings
+            };
+
 
             return true;
+
 
         } catch (error) {
 
@@ -306,19 +343,10 @@ function initializeSettings() {
                 error
             );
 
+
             return false;
-
         }
-
     }
-
-
-    // ========================================================
-    // STATE
-    // ========================================================
-
-    let settings =
-        getSettings();
 
 
     // ========================================================
@@ -410,7 +438,6 @@ function initializeSettings() {
 
 
         updateSidebarName();
-
     }
 
 
@@ -421,16 +448,13 @@ function initializeSettings() {
     function updateSidebarName() {
 
         if (!sidebarShopName) {
-
             return;
-
         }
 
 
         sidebarShopName.textContent =
             settings.shopName ||
             "Mwangaza Mini Mart";
-
     }
 
 
@@ -442,7 +466,7 @@ function initializeSettings() {
 
         saveShopProfile.addEventListener(
             "click",
-            () => {
+            async () => {
 
                 const name =
                     shopName
@@ -457,42 +481,43 @@ function initializeSettings() {
                         "error"
                     );
 
+
                     if (shopName) {
-
                         shopName.focus();
-
                     }
 
-                    return;
 
+                    return;
                 }
 
 
-                settings.shopName =
-                    name;
+                const updatedSettings = {
 
+                    ...settings,
 
-                settings.shopPhone =
-                    shopPhone
-                        ? shopPhone.value.trim()
-                        : "";
+                    shopName: name,
 
+                    shopPhone:
+                        shopPhone
+                            ? shopPhone.value.trim()
+                            : "",
 
-                settings.shopEmail =
-                    shopEmail
-                        ? shopEmail.value.trim()
-                        : "";
+                    shopEmail:
+                        shopEmail
+                            ? shopEmail.value.trim()
+                            : "",
 
+                    shopLocation:
+                        shopLocation
+                            ? shopLocation.value.trim()
+                            : ""
 
-                settings.shopLocation =
-                    shopLocation
-                        ? shopLocation.value.trim()
-                        : "";
+                };
 
 
                 const saved =
-                    saveSettings(
-                        settings
+                    await saveSettingsToDatabase(
+                        updatedSettings
                     );
 
 
@@ -504,7 +529,6 @@ function initializeSettings() {
                     );
 
                     return;
-
                 }
 
 
@@ -529,15 +553,15 @@ function initializeSettings() {
 
         savePOSPreferences.addEventListener(
             "click",
-            () => {
+            async () => {
 
-                settings.currency =
+                const selectedCurrency =
                     currency
                         ? currency.value
                         : "KSh";
 
 
-                settings.defaultPayment =
+                const selectedPayment =
                     defaultPayment
                         ? defaultPayment.value
                         : "Cash";
@@ -556,26 +580,43 @@ function initializeSettings() {
                     threshold < 0
                 ) {
 
-                    threshold = 5;
+                    showToast(
+                        "Low-stock threshold must be zero or greater.",
+                        "error"
+                    );
 
+                    return;
                 }
 
 
-                settings.lowStockThreshold =
-                    Math.floor(
-                        threshold
-                    );
+                threshold =
+                    Math.floor(threshold);
 
 
-                settings.receiptFooter =
-                    receiptFooter
-                        ? receiptFooter.value.trim()
-                        : "";
+                const updatedSettings = {
+
+                    ...settings,
+
+                    currency:
+                        selectedCurrency,
+
+                    defaultPayment:
+                        selectedPayment,
+
+                    lowStockThreshold:
+                        threshold,
+
+                    receiptFooter:
+                        receiptFooter
+                            ? receiptFooter.value.trim()
+                            : ""
+
+                };
 
 
                 const saved =
-                    saveSettings(
-                        settings
+                    await saveSettingsToDatabase(
+                        updatedSettings
                     );
 
 
@@ -587,7 +628,6 @@ function initializeSettings() {
                     );
 
                     return;
-
                 }
 
 
@@ -609,23 +649,28 @@ function initializeSettings() {
 
         saveReceiptSettings.addEventListener(
             "click",
-            () => {
+            async () => {
 
-                settings.showPhoneOnReceipt =
-                    showPhoneOnReceipt
-                        ? showPhoneOnReceipt.checked
-                        : true;
+                const updatedSettings = {
 
+                    ...settings,
 
-                settings.showLocationOnReceipt =
-                    showLocationOnReceipt
-                        ? showLocationOnReceipt.checked
-                        : true;
+                    showPhoneOnReceipt:
+                        showPhoneOnReceipt
+                            ? showPhoneOnReceipt.checked
+                            : true,
+
+                    showLocationOnReceipt:
+                        showLocationOnReceipt
+                            ? showLocationOnReceipt.checked
+                            : true
+
+                };
 
 
                 const saved =
-                    saveSettings(
-                        settings
+                    await saveSettingsToDatabase(
+                        updatedSettings
                     );
 
 
@@ -637,7 +682,6 @@ function initializeSettings() {
                     );
 
                     return;
-
                 }
 
 
@@ -661,20 +705,14 @@ function initializeSettings() {
     function initializeTheme() {
 
         const savedTheme =
-            localStorage.getItem(
-                "theme"
-            );
+            localStorage.getItem("theme");
 
 
-        if (
-            savedTheme === "dark"
-        ) {
+        if (savedTheme === "dark") {
 
             applyDarkTheme();
 
-        } else if (
-            savedTheme === "light"
-        ) {
+        } else if (savedTheme === "light") {
 
             applyLightTheme();
 
@@ -799,7 +837,6 @@ function initializeSettings() {
             "theme",
             "dark"
         );
-
     }
 
 
@@ -818,7 +855,6 @@ function initializeSettings() {
             "theme",
             "light"
         );
-
     }
 
 
@@ -828,9 +864,7 @@ function initializeSettings() {
 
     function applySystemTheme() {
 
-        localStorage.removeItem(
-            "theme"
-        );
+        localStorage.removeItem("theme");
 
 
         const prefersDark =
@@ -870,9 +904,7 @@ function initializeSettings() {
 
 
         const savedTheme =
-            localStorage.getItem(
-                "theme"
-            );
+            localStorage.getItem("theme");
 
 
         // ----------------------------------------------------
@@ -930,6 +962,7 @@ function initializeSettings() {
                     "bg-green-600"
                 );
 
+
                 if (appearanceToggleDot) {
 
                     appearanceToggleDot.style.transform =
@@ -946,6 +979,7 @@ function initializeSettings() {
                 appearanceToggle.classList.add(
                     "bg-slate-300"
                 );
+
 
                 if (appearanceToggleDot) {
 
@@ -1018,131 +1052,90 @@ function initializeSettings() {
 
 
         refreshIcons();
-
     }
 
 
     // ========================================================
-    // EXPORT DATA
+    // EXPORT / DATABASE BACKUP
     // ========================================================
 
     if (exportDataButton) {
 
         exportDataButton.addEventListener(
             "click",
-            () => {
-
-                const backup = {
-
-                    exportedAt:
-                        new Date().toISOString(),
-
-                    application:
-                        "SimplePOS",
-
-                    version:
-                        "1.0.0",
-
-                    products:
-                        getLocalStorageArray(
-                            "products"
-                        ),
-
-                    salesHistory:
-                        getLocalStorageArray(
-                            "salesHistory"
-                        ),
-
-                    lastSale:
-                        getLocalStorageObject(
-                            "lastSale"
-                        ),
-
-                    settings:
-                        getSettings()
-
-                };
-
+            async () => {
 
                 try {
 
-                    const data =
-                        JSON.stringify(
-                            backup,
-                            null,
-                            4
+                    showToast(
+                        "Preparing database backup..."
+                    );
+
+
+                    const response =
+                        await fetch(
+                            `${API_BASE_URL}/settings/backup`
                         );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            `Server returned ${response.status}`
+                        );
+
+                    }
 
 
                     const blob =
-                        new Blob(
-                            [data],
-                            {
-                                type:
-                                    "application/json"
-                            }
-                        );
+                        await response.blob();
 
 
                     const url =
-                        URL.createObjectURL(
-                            blob
-                        );
+                        URL.createObjectURL(blob);
 
 
                     const link =
-                        document.createElement(
-                            "a"
-                        );
+                        document.createElement("a");
 
 
                     const date =
                         new Date()
                             .toISOString()
-                            .slice(
-                                0,
-                                10
-                            );
+                            .slice(0, 10);
 
 
-                    link.href =
-                        url;
-
+                    link.href = url;
 
                     link.download =
-                        `simplepos-backup-${date}.json`;
+                        `mwangaza-pos-backup-${date}.json`;
 
 
-                    document.body.appendChild(
-                        link
-                    );
-
+                    document.body.appendChild(link);
 
                     link.click();
-
 
                     link.remove();
 
 
-                    URL.revokeObjectURL(
-                        url
-                    );
+                    URL.revokeObjectURL(url);
 
 
                     showToast(
-                        "POS data exported successfully."
+                        "POS database backup exported successfully."
                     );
+
 
                 } catch (error) {
 
                     console.error(
-                        "SimplePOS: Export failed.",
+                        "SimplePOS: Backup failed.",
                         error
                     );
 
 
                     showToast(
-                        "Unable to export POS data.",
+                        "Unable to export POS database.",
                         "error"
                     );
 
@@ -1155,7 +1148,7 @@ function initializeSettings() {
 
 
     // ========================================================
-    // IMPORT DATA
+    // IMPORT / DATABASE RESTORE
     // ========================================================
 
     if (importDataButton && importFile) {
@@ -1180,25 +1173,25 @@ function initializeSettings() {
 
 
                 if (!file) {
-
                     return;
-
                 }
 
 
                 const confirmed =
                     confirm(
-                        "Importing a backup may replace your current products, sales history and settings.\n\nContinue?"
+                        "WARNING!\n\n" +
+                        "Restoring a backup will replace the current " +
+                        "products, sales history and settings in the " +
+                        "POS database.\n\n" +
+                        "Continue?"
                     );
 
 
                 if (!confirmed) {
 
-                    importFile.value =
-                        "";
+                    importFile.value = "";
 
                     return;
-
                 }
 
 
@@ -1207,7 +1200,7 @@ function initializeSettings() {
 
 
                 reader.onload =
-                    event => {
+                    async event => {
 
                         try {
 
@@ -1219,8 +1212,7 @@ function initializeSettings() {
 
                             if (
                                 !backup ||
-                                typeof backup !==
-                                "object"
+                                typeof backup !== "object"
                             ) {
 
                                 throw new Error(
@@ -1230,93 +1222,85 @@ function initializeSettings() {
                             }
 
 
-                            // -------------------------------
-                            // PRODUCTS
-                            // -------------------------------
-
                             if (
-                                Array.isArray(
+                                !Array.isArray(
                                     backup.products
                                 )
                             ) {
 
-                                localStorage.setItem(
-                                    "products",
-                                    JSON.stringify(
-                                        backup.products
-                                    )
+                                throw new Error(
+                                    "Backup does not contain products."
                                 );
 
                             }
 
 
-                            // -------------------------------
-                            // SALES HISTORY
-                            // -------------------------------
-
                             if (
-                                Array.isArray(
-                                    backup.salesHistory
+                                !Array.isArray(
+                                    backup.sales
                                 )
                             ) {
 
-                                localStorage.setItem(
-                                    "salesHistory",
-                                    JSON.stringify(
-                                        backup.salesHistory
-                                    )
+                                throw new Error(
+                                    "Backup does not contain sales."
                                 );
 
                             }
 
 
-                            // -------------------------------
-                            // LAST SALE
-                            // -------------------------------
-
                             if (
-                                backup.lastSale &&
-                                typeof backup.lastSale ===
-                                "object"
+                                !Array.isArray(
+                                    backup.saleItems
+                                )
                             ) {
 
-                                localStorage.setItem(
-                                    "lastSale",
-                                    JSON.stringify(
-                                        backup.lastSale
-                                    )
-                                );
-
-                            }
-
-
-                            // -------------------------------
-                            // SETTINGS
-                            // -------------------------------
-
-                            if (
-                                backup.settings &&
-                                typeof backup.settings ===
-                                "object"
-                            ) {
-
-                                settings = {
-
-                                    ...defaultSettings,
-                                    ...backup.settings
-
-                                };
-
-
-                                saveSettings(
-                                    settings
+                                throw new Error(
+                                    "Backup does not contain sale items."
                                 );
 
                             }
 
 
                             showToast(
-                                "Backup imported successfully. Reloading..."
+                                "Restoring database backup..."
+                            );
+
+
+                            const response =
+                                await fetch(
+                                    `${API_BASE_URL}/settings/restore`,
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body:
+                                            JSON.stringify(
+                                                backup
+                                            )
+                                    }
+                                );
+
+
+                            const result =
+                                await response.json();
+
+
+                            if (!response.ok) {
+
+                                throw new Error(
+                                    result.message ||
+                                    "Restore failed."
+                                );
+
+                            }
+
+
+                            showToast(
+                                "Backup restored successfully. Reloading..."
                             );
 
 
@@ -1329,15 +1313,17 @@ function initializeSettings() {
                                 1200
                             );
 
+
                         } catch (error) {
 
                             console.error(
-                                "SimplePOS: Import failed.",
+                                "SimplePOS: Restore failed.",
                                 error
                             );
 
 
                             showToast(
+                                error.message ||
                                 "Invalid or corrupted backup file.",
                                 "error"
                             );
@@ -1358,13 +1344,10 @@ function initializeSettings() {
                     };
 
 
-                reader.readAsText(
-                    file
-                );
+                reader.readAsText(file);
 
 
-                importFile.value =
-                    "";
+                importFile.value = "";
 
             }
         );
@@ -1380,24 +1363,26 @@ function initializeSettings() {
 
         clearAllData.addEventListener(
             "click",
-            () => {
+            async () => {
 
                 const firstConfirmation =
                     confirm(
-                        "WARNING!\n\nThis will permanently delete your products, sales history, last receipt and SimplePOS settings from this browser.\n\nDo you want to continue?"
+                        "WARNING!\n\n" +
+                        "This will permanently delete all products " +
+                        "and sales history from the POS database.\n\n" +
+                        "Your settings will be reset to their defaults.\n\n" +
+                        "Do you want to continue?"
                     );
 
 
                 if (!firstConfirmation) {
-
                     return;
-
                 }
 
 
                 const secondConfirmation =
                     prompt(
-                        'Type "DELETE" to permanently clear all SimplePOS data.'
+                        'Type "DELETE" to permanently clear all POS data.'
                     );
 
 
@@ -1411,31 +1396,45 @@ function initializeSettings() {
                     );
 
                     return;
-
                 }
 
 
                 try {
 
-                    localStorage.removeItem(
-                        "products"
+                    showToast(
+                        "Clearing POS database..."
                     );
 
-                    localStorage.removeItem(
-                        "salesHistory"
-                    );
 
-                    localStorage.removeItem(
-                        "lastSale"
-                    );
+                    const response =
+                        await fetch(
+                            `${API_BASE_URL}/settings/clear`,
+                            {
+                                method: "DELETE"
+                            }
+                        );
 
-                    localStorage.removeItem(
-                        "settings"
-                    );
 
+                    const result =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.message ||
+                            "Unable to clear POS data."
+                        );
+
+                    }
+
+
+                    // ------------------------------------------------
+                    // Theme is browser preference, so leave it alone.
+                    // ------------------------------------------------
 
                     showToast(
-                        "All SimplePOS data has been cleared."
+                        "All POS data has been cleared."
                     );
 
 
@@ -1449,6 +1448,7 @@ function initializeSettings() {
                         1500
                     );
 
+
                 } catch (error) {
 
                     console.error(
@@ -1458,7 +1458,8 @@ function initializeSettings() {
 
 
                     showToast(
-                        "Unable to clear application data.",
+                        error.message ||
+                        "Unable to clear POS database.",
                         "error"
                     );
 
@@ -1466,86 +1467,6 @@ function initializeSettings() {
 
             }
         );
-
-    }
-
-
-    // ========================================================
-    // LOCAL STORAGE ARRAY
-    // ========================================================
-
-    function getLocalStorageArray(
-        key
-    ) {
-
-        try {
-
-            const value =
-                localStorage.getItem(
-                    key
-                );
-
-
-            if (!value) {
-
-                return [];
-
-            }
-
-
-            const parsed =
-                JSON.parse(
-                    value
-                );
-
-
-            return Array.isArray(
-                parsed
-            )
-                ? parsed
-                : [];
-
-        } catch (error) {
-
-            return [];
-
-        }
-
-    }
-
-
-    // ========================================================
-    // LOCAL STORAGE OBJECT
-    // ========================================================
-
-    function getLocalStorageObject(
-        key
-    ) {
-
-        try {
-
-            const value =
-                localStorage.getItem(
-                    key
-                );
-
-
-            if (!value) {
-
-                return null;
-
-            }
-
-
-            return JSON.parse(
-                value
-            );
-
-        } catch (error) {
-
-            return null;
-
-        }
 
     }
 
@@ -1568,7 +1489,6 @@ function initializeSettings() {
         ) {
 
             return;
-
         }
 
 
@@ -1588,9 +1508,7 @@ function initializeSettings() {
 
 
             const icon =
-                document.createElement(
-                    "i"
-                );
+                document.createElement("i");
 
 
             icon.setAttribute(
@@ -1605,9 +1523,7 @@ function initializeSettings() {
                 "w-4 h-4";
 
 
-            toastIcon.appendChild(
-                icon
-            );
+            toastIcon.appendChild(icon);
 
 
             toastIcon.classList.remove(
@@ -1625,13 +1541,9 @@ function initializeSettings() {
         }
 
 
-        toast.classList.remove(
-            "hidden"
-        );
+        toast.classList.remove("hidden");
 
-        toast.classList.add(
-            "toast"
-        );
+        toast.classList.add("toast");
 
 
         refreshIcons();
@@ -1639,9 +1551,7 @@ function initializeSettings() {
 
         if (toastTimer) {
 
-            clearTimeout(
-                toastTimer
-            );
+            clearTimeout(toastTimer);
 
         }
 
@@ -1657,7 +1567,6 @@ function initializeSettings() {
                 },
                 3000
             );
-
     }
 
 
@@ -1686,5 +1595,7 @@ function initializeSettings() {
     loadForm();
 
     refreshIcons();
+
+    await loadSettings();
 
 }
